@@ -1,0 +1,25 @@
+using System;
+using System.Collections.Generic;
+
+public class Solution {
+    public string[] solution(string[] players, string[] callings) {
+        Dictionary<string, int> playerTable = new Dictionary<string, int>(); //<이름, 순위>
+            
+        for(int i = 0; i < players.Length; i++){
+            playerTable.Add(players[i], i);      //현 player 이름과 순위를 Dictionary에 저장
+        }
+        
+        for(int i = 0; i < callings.Length; i++){
+            int overtakeIndex = playerTable[callings[i]];        //이름이 불린 선수의 순위
+            string overtakenPeople = players[overtakeIndex-1];   //불린 선수와 변경될 선수 이름
+            
+            playerTable[players[overtakeIndex]] = overtakeIndex-1; //Dictionary 갱신
+            playerTable[players[overtakeIndex-1]] = overtakeIndex;
+            
+            players[overtakeIndex-1]  = players[overtakeIndex];  //player 배열 갱신
+            players[overtakeIndex] = overtakenPeople;
+        }
+
+        return players;
+    }
+}
