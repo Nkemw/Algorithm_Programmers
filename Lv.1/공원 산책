@@ -1,0 +1,75 @@
+using System;
+
+public class Solution {
+    public int[] solution(string[] park, string[] routes) {
+        int[] answer = new int[2];
+        
+        for(int i = 0; i < park.Length; i++){        //시작지점 찾기
+            for(int j = 0; j < park[i].Length; j++){
+                if(park[i][j] == 'S'){
+                    answer[0] = i;
+                    answer[1] = j;
+                }
+            }
+        }
+        
+        int movement = 0;     //이동 거리
+        bool isTrap = false;  //함정 검사
+        
+        for(int i = 0; i < routes.Length; i++){
+            movement = int.Parse(routes[i][2].ToString());  //char 타입을 string 변환 뒤 int로 parse
+            isTrap = false; 
+
+            if(routes[i][0] == 'N'){  //북쪽으로 이동하는 경우 
+                if(answer[0] - movement >= 0){  //배열을 벗어나는지 검사
+                    for(int j = 1; j <= movement; j++){  
+                        if(park[answer[0]-j][answer[1]] == 'X'){ //북쪽에 함정이 존재하는지 검사
+                            isTrap = true;
+                            break;
+                        }
+                    }
+                    if(!isTrap){  //결과적으로 이동 가능하면 이동한다
+                        answer[0] -= movement;
+                    }
+                }
+            } else if (routes[i][0] == 'S'){  //남쪽으로 이동하는 경우
+                if(answer[0] + movement <= park.Length-1){
+                    for(int j = 1; j <= movement; j++){
+                        if(park[answer[0]+j][answer[1]] == 'X'){
+                            isTrap = true;
+                            break;
+                        }
+                    }
+                    if(!isTrap){
+                        answer[0] += movement;
+                    }
+                }
+            } else if (routes[i][0] == 'W'){  //서쪽으로 이동하는 경우
+                if(answer[1] - movement >= 0){
+                    for(int j = 1; j <= movement; j++){
+                        if(park[answer[0]][answer[1]-j] == 'X'){
+                            isTrap = true;
+                            break;
+                        }
+                    }
+                    if(!isTrap){
+                        answer[1] -= movement;
+                    }
+                }
+            } else { //동쪽으로 이동하는 경우. 문자열은 무조건 NSWE중 하나여서 단순하게 else로 작성했다
+                if(answer[1] + movement <= park[0].Length-1){
+                    for(int j = 1; j <= movement; j++){
+                        if(park[answer[0]][answer[1]+j] == 'X'){
+                            isTrap = true;
+                            break;
+                        }
+                    }
+                    if(!isTrap){
+                        answer[1] += movement;
+                    }
+                }
+            }
+        }
+        return answer;
+    }
+}
