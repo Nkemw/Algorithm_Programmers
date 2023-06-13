@@ -1,0 +1,61 @@
+using System;
+using System.Collections.Generic;
+public class ReportInfo{  //신고 내역이 담긴 테이블
+    public string userID;
+    public List<string> reportedUser;
+    
+    public ReportInfo(string userID){
+        this.userID = userID;
+        reportedUser = new List<string>();
+    }
+}
+public class ReportTable{ //신고 횟수가 담긴 테이블
+    public string userID;
+    public int reportedCount;
+    
+    public ReportTable(string userID){
+        this.userID = userID;
+    }
+}
+public class Solution {
+    public int[] solution(string[] id_list, string[] report, int k) {
+        int[] answer = new int[id_list.Length];
+        ReportInfo[] info = new ReportInfo[id_list.Length];
+        ReportTable[] reportTable = new ReportTable[id_list.Length];
+                 
+        //string을 입력받아 인덱스로 반환하기 위해 Dictionary를 사용하였다.
+        Dictionary<string, int> userTable = new Dictionary<string, int>();
+        
+        for(int i = 0; i < id_list.Length; i++){ //자료 초기화
+            info[i] = new ReportInfo(id_list[i]);
+            reportTable[i] = new ReportTable(id_list[i]);
+            userTable.Add(id_list[i], i);
+        }
+        
+        string[] reportStrings = new string[2];  //Split된 문자열들을 받기 위한 문자열 배열
+        
+        for(int i = 0; i < report.Length; i++){
+            reportStrings = report[i].Split(' ');
+
+            //username 인덱스를 통해 신고자가 신고한 사람이 반복되지 않는 경우에만 신고 내역에 추가
+            //신고 내역에 추가되었다면 신고된 사람의 신고 횟수를 증가시킨다
+            if(!info[userTable[reportStrings[0]]].reportedUser.Contains(reportStrings[1])){
+                info[userTable[reportStrings[0]]].reportedUser.Add(reportStrings[1]);
+                reportTable[userTable[reportStrings[1]]].reportedCount++;
+            }
+        }
+        
+        for(int i = 0; i < id_list.Length; i++){
+            for(int j = 0; j < info[i].reportedUser.Count; j++){
+
+                //모든 유저의 신고 내역을 열어 신고한 유저가 정지될만큼의 신고를 당했는지 검사
+                //정지될만큼의 신고를 당했다면 정지로 간주하고 신고 Count를 추가한다
+                if(reportTable[userTable[info[i].reportedUser[j]]].reportedCount >= k){
+                   answer[i]++; 
+                }
+            }
+        }
+        
+        return answer;
+    }
+}
