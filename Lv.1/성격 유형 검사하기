@@ -1,0 +1,56 @@
+using System;
+using System.Collections.Generic;
+public class Solution {
+    public string solution(string[] survey, int[] choices) {
+        string answer = "";
+        
+        //string[i][0]는 char형이므로 key값을 char로 정한다. value는 점수
+        Dictionary<char, int> typeTable = new Dictionary<char, int>();
+        
+        //초기값 설정
+        typeTable.Add('R', 0);
+        typeTable.Add('T', 0);
+        typeTable.Add('C', 0);
+        typeTable.Add('F', 0);
+        typeTable.Add('J', 0);
+        typeTable.Add('M', 0);
+        typeTable.Add('A', 0);
+        typeTable.Add('N', 0);
+        
+        //choices 점수에 따른 유형 점수 배정
+        for(int i = 0; i < choices.Length; i++){
+            if(choices[i] < 4){
+                typeTable[survey[i][0]] += 4 - choices[i];
+            } else if(choices[i] > 4){
+                typeTable[survey[i][1]] += choices[i]-4;
+            }
+        }
+        
+        //결과를 종합한다. 같은 점수는 알파벳 오름차순으로 결정한다.
+        if(typeTable['R'] >= typeTable['T']){
+            answer += "R";    
+        } else {
+            answer += "T";
+        }
+        
+        if(typeTable['C'] >= typeTable['F']){
+            answer += "C";    
+        } else {
+            answer += "F";
+        }
+        
+        if(typeTable['J'] >= typeTable['M']){
+            answer += "J";    
+        } else {
+            answer += "M";
+        }
+        
+        if(typeTable['A'] >= typeTable['N']){
+            answer += "A";    
+        } else {
+            answer += "N";
+        }
+        
+        return answer;
+    }
+}
