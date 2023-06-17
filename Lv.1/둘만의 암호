@@ -1,0 +1,38 @@
+using System;
+using System.Collections.Generic;
+public class Solution {
+    public string solution(string s, string skip, int index) {
+        string answer = "";
+        
+        List<char> wordList = new List<char>();  //스킵 문자를 제외한 알파벳 사전(리스트)
+        bool isSkip; //스킵문자를 검사하는 목적
+        
+        for(int i = 'a'; i <= 'z'; i++){
+            isSkip = false;
+            for(int j = 0; j < skip.Length; j++){ //스킵 문자열을 검사
+                if(skip[j] == i){
+                    isSkip = true;
+                    break;
+                }
+            }
+            
+            if(!isSkip){ //스킵 문자가 아니라면 사전에 추가
+                wordList.Add((char)i);
+            }
+        }
+        
+        for(int i = 0; i < s.Length; i++){
+           
+            for(int j = 0; j < wordList.Count; j++){
+                if(s[i] == wordList[j]){              //원본 문자가 들어있는 리스트 인덱스를 구한다
+                    if(j + index >= wordList.Count){  //리스트 인덱스 + 추가 인덱스가 리스트 크기보다 큰 경우 
+                        answer += wordList[(j + index) % wordList.Count];
+                    } else {
+                        answer += wordList[j + index];
+                    }
+                }
+            }
+        }
+        return answer;
+    }
+}
