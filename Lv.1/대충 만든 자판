@@ -1,0 +1,32 @@
+using System;
+
+public class Solution {
+    public int[] solution(string[] keymap, string[] targets) {
+        int[] answer = new int[targets.Length];
+        
+        int minIndex;  //keymap 최소 인덱스
+        
+        for(int i = 0; i < targets.Length; i++){
+
+            for(int j = 0; j < targets[i].Length; j++){
+                minIndex = 200;
+                for(int k = 0; k < keymap.Length; k++){
+                    //targets 문자를 keymap의 모든 문자와 대조하여 최소 인덱스 저장
+                    if(keymap[k].Contains(targets[i][j]) && keymap[k].IndexOf(targets[i][j]) < minIndex){
+                        minIndex = keymap[k].IndexOf(targets[i][j]);
+                    }
+                }
+                
+                if(minIndex == 200){ //targets 문자가 keymap에 없는 경우
+                    answer[i] = -1;
+                    break;
+                } else { //targets 문자가 keymap에 있는 경우 인덱스를 출력값에 맞게 +1 해준다.
+                    answer[i] += minIndex+1;
+                }
+            }
+            
+        }
+        
+        return answer;
+    }
+}
