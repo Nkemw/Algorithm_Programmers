@@ -1,0 +1,33 @@
+using System;
+using System.Collections.Generic;
+public class Solution {
+    public int solution(string s) {
+        int answer = 0;
+        
+        List<char> splitWord = new List<char>(); //문자를 저장하는 리스트
+        int firstWordCount = 0; //처음 온 문자의 개수를 저장
+        
+        for(int i = 0; i < s.Length; i++){
+            splitWord.Add(s[i]);  //일단 문자를 저장한다
+            
+            if(i != s.Length-1){  //마지막 문자를 검사
+                if(s[i] == splitWord[0]){ //먼저 온 문자와 같다면 처음 온 문자의 개수를 늘린다
+                    firstWordCount++;
+
+                } else {
+                    //처음 온 문자와 다른 문자의 개수가 같다면 새로운 단어를 생성한다.
+                    if(splitWord.Count == 2*firstWordCount){
+                        answer++;
+                        splitWord.Clear();
+                        firstWordCount = 0;
+                    }
+                }
+            } else {
+                answer++;
+            }
+            
+
+        }
+        return answer;
+    }
+}
