@@ -1,0 +1,33 @@
+using System;
+
+public class Solution {
+    public int solution(int n, int[] lost, int[] reserve) {
+        int answer = 0;
+        
+        answer = n - lost.Length; //체육복을 입을 수 있는 학생의 수
+
+        //잃어버렸지만 여분의 체육복을 가지고 있는 경우
+        for(int i = 0; i < lost.Length; i++){
+            for(int j = 0; j < reserve.Length; j++){
+                if(lost[i] != -1 && lost[i] == reserve[j]){
+                    //체육복을 자신이 가지고 다른 사람에게 빌려줄 수 없다는 의미로 -1을 저장한다
+                    lost[i] = -1;
+                    reserve[j] = -1;
+                    answer++;
+                }
+            }
+        }
+       
+        //잃어버렸지만 앞 뒤의 학생이 여분의 체육복을 가지고 있는 경우
+        for(int i = 0; i < lost.Length; i++){
+            for(int j = 0; j < reserve.Length; j++){
+                if(lost[i] - 1 == reserve[j] || lost[i] + 1 == reserve[j]){
+                    lost[i] = -1;
+                    reserve[j] = -1;
+                    answer++;
+                }
+            }
+        }
+        return answer;
+    }
+}
