@@ -1,0 +1,83 @@
+using System;
+
+public class Solution {
+    public int solution(string[] babbling) {
+        int answer = 0;
+
+        //어떤 유효한 문자열을 검출했는지
+        int currentBabblingIndex = -1;
+        
+        for(int i = 0; i < babbling.Length; i++){
+            currentBabblingIndex = -1; //인덱스 초기화
+
+            //한 문자열 검사
+            for(int j = 0; j < babbling[i].Length; j++){
+
+                //문제에서 지정한 문자열은 "aya", "ye", "woo", "ma"
+                switch(babbling[i][j]){
+                    case 'a': //"aya" 문자열인지 검사
+                        
+                        //앞서 검사한 문자열이 같은 경우 유효하지 않은 문자열로 취급한다
+                        if(currentBabblingIndex == 0){
+                            currentBabblingIndex = -1;
+                            break;
+                        }
+                        //문자열이 확실하게 3글자인지 검사한 뒤 유효한 문자열인지 검사 
+                        else if(j+2 <= babbling[i].Length-1 && babbling[i].Substring(j, 3).Equals("aya")){
+                            currentBabblingIndex = 0;
+                            j += 2;
+                        } 
+                        //"aya"가 아닌 "a*"인 경우
+                        else {
+                            currentBabblingIndex = -1;
+                        }
+                        break;
+                    case 'y':
+                        if(currentBabblingIndex == 1){
+                            currentBabblingIndex = -1;
+                            break;
+                        } else if(j+1 <= babbling[i].Length-1 && babbling[i].Substring(j, 2).Equals("ye")){
+                            currentBabblingIndex = 1;
+                            j += 1;
+                        } else {
+                            currentBabblingIndex = -1;
+                        }
+                        break;
+                    case 'w':
+                        if(currentBabblingIndex == 2){
+                            currentBabblingIndex = -1;
+                            break;
+                        } else if(j+2 <= babbling[i].Length-1 && babbling[i].Substring(j, 3).Equals("woo")){
+                            currentBabblingIndex = 2;
+                            j += 2;
+                        } else {
+                            currentBabblingIndex = -1;
+                        }
+                        break;
+                    case 'm':
+                        if(currentBabblingIndex == 3){
+                            currentBabblingIndex = -1;
+                            break;
+                        } else if(j+1 <= babbling[i].Length-1 && babbling[i].Substring(j, 2).Equals("ma")){
+                            currentBabblingIndex = 3;
+                            j += 1;
+                        } else {
+                            currentBabblingIndex = -1;
+                        }
+                        break;
+                    default:
+                        currentBabblingIndex = -1;
+                        break;
+                }
+                //문자열 검사 결과로 유효한 문자열이 아니면 바로 다음 문자열 검사
+                if(currentBabblingIndex == -1){
+                    break;
+                }
+                if(j == babbling[i].Length-1){
+                    answer++;
+                }
+            }
+        }
+        return answer;
+    }
+}
