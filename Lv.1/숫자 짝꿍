@@ -1,0 +1,42 @@
+using System;
+using System.Text;
+using System.Collections.Generic;
+using System.Linq;
+public class Solution {
+    public string solution(string X, string Y) {
+        string answer = "";
+        
+        //X문자열의 수를 Dictionary로 저장
+        Dictionary<char, int> XDict = new Dictionary<char, int>();
+        StringBuilder sb = new StringBuilder();
+        
+        //사전에 수가 있다면 개수를 1 추가하고 아니라면 새로 만든다
+        for(int i = 0; i < X.Length; i++){
+            if(XDict.ContainsKey(X[i])){
+                XDict[X[i]] += 1;
+            } else {
+                XDict.Add(X[i], 1);
+            }
+        }
+        
+        //Y문자열의 수를 사전에 입력하여 개수에 따라 StringBuilder에 저장한다
+        for(int i = 0; i < Y.Length; i++){
+            if(XDict.ContainsKey(Y[i]) && XDict[Y[i]] != 0){
+                XDict[Y[i]] -= 1;
+                sb.Append(Y[i]);
+            }
+        }
+        
+        //저장된 StringBuilder 문자열을 출력한 뒤 내림차순 정렬
+        answer = sb.ToString();
+        answer = new String(answer.ToCharArray().OrderByDescending(x => x).ToArray());
+        
+        //예외 처리
+        if(string.IsNullOrEmpty(answer)){
+            answer = "-1";
+        } else if(answer[0] == '0'){
+            answer = "0";
+        }
+        return answer;
+    }
+}
