@@ -1,0 +1,38 @@
+using System;
+
+public class Solution {
+    public int[] solution(int[] lottos, int[] win_nums) {
+        int[] answer = new int[2];
+        
+        int zeroCount = 0; //0의 개수
+        int winCount = 0;  //당첨 개수
+        
+        for(int i = 0; i < lottos.Length; i++){
+            for(int j = 0; j < win_nums.Length; j++){
+                //내 번호가 0이면 zeroCount만 더해주고 나머지 연산은 하지 않는다
+                if(lottos[i] == 0){
+                    zeroCount++;
+                    break;
+                }
+                
+                //내 번호 중 당첨 번호와 같은 번호가 있다면 나머지 연산은 하지 않는다
+                if(lottos[i] == win_nums[j]){
+                    winCount++;
+                    break;
+                }
+            }
+        }
+        
+        //answer[0]에는 최고 순위, answer[1]에는 최저 순위를 계산한다
+        answer[0] = 7 - zeroCount - winCount;
+        answer[1] = 7 - winCount;
+        
+        //일치한 번호가 0개 또는 1개일 때 모두 6등이 나오도록 조정한다.
+        for(int i = 0; i < answer.Length; i++){
+            if(answer[i] >= 6){
+                answer[i] = 6;
+            }
+        }
+        return answer;
+    }
+}
