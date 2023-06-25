@@ -1,0 +1,28 @@
+using System;
+
+public class Solution {
+    public int solution(int n, int m, int[] section) {
+        int answer = 0;
+        
+        int paintRange = 0; //벽이 칠해지는 범위
+        
+        for(int i = 0; i < section.Length; i++){
+            //초기값 설정, 칠해지지 않은 벽부터 롤러의 길이만큼 칠한다
+            if(paintRange == 0){
+                paintRange = section[i] + m-1;
+            }
+         
+            //칠해져 있지 않은 벽이 있다면 새롭게 롤러로 칠한다.
+            if(paintRange < section[i]){
+                answer++;
+                paintRange = section[i] + m-1;
+            }
+
+            //만약 칠해지지 않은 벽이 마지막이라면 새롭게 칠하고 끝낸다.
+            if(i == section.Length-1){
+                answer++;
+            }          
+        }
+        return answer;
+    }
+}
