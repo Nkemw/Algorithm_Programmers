@@ -1,0 +1,51 @@
+using System;
+using System.Collections.Generic;
+
+public class Solution {
+    public List<int> solution(int[] answers) {
+        List<int> answer = new List<int>();
+        
+        //특정 패턴에 대한 정답 수
+        int[] luckyCorrects = new int[3];
+        
+        //패턴 배열
+        int[] firstType = {1, 2, 3, 4, 5};
+        int[] secondType = {2, 1, 2, 3, 2, 4, 2, 5};
+        int[] thirdType = {3, 3, 1, 1, 2, 2, 4, 4, 5, 5};
+        
+        for(int i = 0; i < answers.Length; i++){
+            //첫 번째 패턴 비교
+            if(answers[i] == firstType[i % 5]){
+                luckyCorrects[0]++;
+            }
+            
+            //두 번째 패턴 비교
+            if(answers[i] == secondType[i % 8]){
+                luckyCorrects[1]++;
+            }
+            
+            //세 번째 패턴 비교
+            if(answers[i] == thirdType[i % 10]){
+                luckyCorrects[2]++;
+            }
+        }
+        
+        int max = -1;
+        
+        //각 패턴을 비교하여 최대값 산정
+        for(int i = 0; i < luckyCorrects.Length; i++){
+            if(luckyCorrects[i] > max){
+                max = luckyCorrects[i];
+            }
+        }
+        
+        //최대값인 패턴을 결과 리스트에 추가
+        for(int i = 0; i < luckyCorrects.Length; i++){
+            if(luckyCorrects[i] == max){
+                answer.Add(i+1);
+            }
+        }
+        
+        return answer;
+    }
+}
