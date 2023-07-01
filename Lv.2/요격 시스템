@@ -1,0 +1,43 @@
+using System;
+using System.Collections.Generic;
+
+public class Solution {
+    public int solution(int[,] targets) {
+        int answer = 0;
+
+        List<int[]> targetList = new List<int[]>();
+
+        //리스트에 선분 좌표(시작, 끝) 저장, 단일 반복문으로 변경
+        for(int i = 0; i < targets.GetLength(0); i++){
+            
+            int[] temp = new int[2];
+            temp[0] = targets[i, 0];
+            temp[1] = targets[i, 1];
+            
+            targetList.Add(temp);
+        }
+        
+        //리스트 오름차순 변경
+        targetList.Sort((a, b) =>
+        {
+            return a[0].CompareTo(b[0]);
+        });
+        
+        
+        int endValue = -1; //현 그룹의 끝 점 좌표
+        
+        //선분 그룹으로 묶기
+        foreach(int[] item in targetList){
+            if(item[1] < endValue)          //새 선분의 끝 좌표가 작다면 갱신한다
+            {
+                endValue = item[1];
+            } else if(item[0] >= endValue)  //새 선분의 시작 좌표가 endvalue보다 크면
+            {                               //같은 그룹으로 묶을 수 없으므로 새롭게 묶는다
+                answer++;
+                endValue = item[1];
+            }
+        }
+        
+        return answer;
+    }
+}
