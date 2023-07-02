@@ -1,0 +1,87 @@
+using System;
+using System.Collections.Generic;
+
+public class Solution {
+    public string[] solution(string[,] plans) {
+        string[] answer = new string[plans.GetLength(0)];
+        int answerPointer = 0; //answer의 비어있는 최소 인덱스
+        
+        //리스트로 과제 저장
+        List<string[]> planList = new List<string[]>();
+        for(int i = 0; i < plans.GetLength(0); i++){
+            string[] copyRow = new string[plans.GetLength(1)];
+            
+            copyRow[0] = plans[i, 0];
+            copyRow[1] = plans[i, 1];
+            copyRow[2] = plans[i, 2];
+
+            
+            planList.Add(copyRow);
+        }
+        
+        //리스트 오름차순 정렬
+        planList.Sort((a, b) =>
+        {
+            return a[1].CompareTo(b[1]);
+        });
+
+        //밀린 과제를 Stack으로 관리
+        //totalTime을 통해 현재 시간과 소요 시간에 대한 연산을 수행
+        Stack<string[]> delayWork = new Stack<string[]> ();
+        int totalTime = TimeValue(planList[0][1], "0");
+        
+        
+        for(int i = 0; i < planList.Count; i++){
+            //밀린 과제가 비어있으면 새로운 과제를 바로 밀린 과제로 취급한다
+            if(delayWork.Count == 0){
+                delayWork.Push(planList[i]);
+            } else {
+                //밀린 과제가 있는 상태에서 새로운 과제가 들어온 경우
+                while(true){
+
+                    //밀린 과제들을 처리하던 중 밀린 과제가 없는 경우
+                    if(delayWork.Count == 0){ 
+                        totalTime = TimeValue(planList[i][1], "0");
+                        delayWork.Push(planList[i]);
+                        break;
+                    }
+
+                    //현재 과제를 처리할 수 있는 경우 바로 처리한다.
+                    if(totalTime + int.Parse(delayWork.Peek()[2]) <= TimeValue(planList[i][1], "0")){
+                        totalTime += int.Parse(delayWork.Peek()[2]);
+                        answer[answerPointer++] = delayWork.Pop()[0];
+                    } else {
+                        //현재 과제를 처리할 수 없는 경우 현재 과제 소요시간 갱신 및 과제 추가
+                        string[] temp = delayWork.Pop();
+                        temp[2] = (totalTime + int.Parse(temp[2]) - TimeValue(planList[i][1], "0")).ToString();
+                        
+                        totalTime = TimeValue(planList[i][1], "0");
+                        delayWork.Push(temp);
+                        delayWork.Push(planList[i]);
+                        break;
+                    }
+                    
+                    
+                }
+                
+            }
+        }
+       
+        //새로운 과제가 더 이상 없다면 밀린 과제 모두 처리 
+        while(true){
+            if(delayWork.Count == 0){
+                break;
+            } else{
+                answer[answerPointer++] = delayWork.Pop()[0];
+            }
+        }
+        
+        return answer;
+    }
+    
+    //시간 문자열을 정수로 반환
+    public int TimeValue(string time, string workTime){
+        int timeValue = int.Parse(time.Split(":")[0]) * 60 + int.Parse(time.Split(':')[1]) + int.Parse(workTime); 
+        return timeValue;
+    }
+}
