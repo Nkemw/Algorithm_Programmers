@@ -1,0 +1,42 @@
+using System.Text;
+using System.Collections.Generic;
+public class Solution {
+    public string solution(string s) {
+        string answer = "";
+        
+        //소문자를 대문자로 변경한 인덱스를 기억한다
+        Dictionary<int, char> upperDict = new Dictionary<int, char>();
+        StringBuilder sb = new StringBuilder();
+ 
+        //모든 문자를 소문자로 변경
+        s = s.ToLower();
+        
+        //첫 글자를 대문자로 변경하여 저장
+        sb.Append(char.ToUpper(s[0]));
+        
+        for(int i = 1; i < s.Length-1; i++){
+            //i번째 문자가 공백이라면 i+1 값을 키로, i+1번째 문자를 대문자로 변경하여 값으로 저장
+            if(s[i] == ' '){
+                upperDict.Add(i+1, char.ToUpper(s[i+1]));
+            }
+            
+            //키 i가 있다면 변경된 문자를, 없다면 그대로 저장한다
+            if(upperDict.ContainsKey(i)){
+                sb.Append(upperDict[i]);
+            } else {
+                sb.Append(s[i]);
+            }
+        }
+        
+        //문자열의 길이가 1인 경우가 아니면 모든 문자열은 마지막 문자 전까지 저장된 상태이므로
+        //마지막 문자를 저장한다 
+        if(s.Length != 1){
+            sb.Append(s[s.Length-1]);
+        }
+        
+        //StringBuilder에 저장된 문자열을 출력한다
+        answer = sb.ToString();
+
+        return answer;
+    }
+}
