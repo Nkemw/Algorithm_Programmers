@@ -1,0 +1,32 @@
+using System;
+
+public class Solution {
+    public bool solution(string s) {
+        bool answer = true;
+        
+        //가상 괄호 포인터
+        int stackPointer = 0;
+        
+        //문자 처리
+        for(int i = 0; i < s.Length; i++){
+            //좌괄호가 나오면 +1, 우괄호가 나오면 -1을 더해준다
+            if(s[i] == '('){
+                stackPointer++;
+            } else {
+                stackPointer--;
+            }
+           
+            //포인터가 음수가 되면 실패 
+            if(stackPointer < 0){
+                answer = false;
+                break;
+            }
+        }
+        
+        //모든 문자열 처리 후 포인터가 0이 아니면 실패
+        if(stackPointer != 0){
+            answer = false;
+        }
+        return answer;
+    }
+}
