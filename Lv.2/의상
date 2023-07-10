@@ -1,0 +1,31 @@
+using System;
+using System.Collections.Generic;
+
+public class Solution {
+    public int solution(string[,] clothes) {
+        int answer = 0;
+
+        //의류를 카테고리로 분류하기 위해 Dictionary 자료구조를 이용한다
+        Dictionary<string, int> clothesDict = new Dictionary<string, int>();
+        
+        //입력 문자열을 검사하여 분류가 되어 있으면 해당 카테고리의 개수를 1 더하고
+        //분류가 되어 있지 않으면 새로 카테고리를 만들어 준다.
+        for(int i = 0; i < clothes.GetLength(0); i++){
+            if(clothesDict.ContainsKey(clothes[i, 1])){
+                clothesDict[clothes[i, 1]]++;
+            } else {
+                clothesDict.Add(clothes[i, 1], 1);
+            }
+        }
+        
+        int combination = 1;
+        
+        //의류를 입지 않을 수 있으며 하나의 의류는 걸쳐야 한다   
+        foreach(int value in clothesDict.Values) {
+            combination *= value+1;
+        }
+        answer = combination-1;
+    
+        return answer;
+    }
+}
