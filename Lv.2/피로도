@@ -1,0 +1,42 @@
+using System;
+
+public class Solution {
+
+    //매개변수를 줄이기 위해 전역 변수로 선언하였다.
+    //i번째 던전을 방문했는지 검사하는 배열
+    public bool[] isVisit;
+    public int answer = 0;
+    
+    public int solution(int k, int[,] dungeons) {
+        //던전의 개수만큼 메모리 할당
+        isVisit = new bool[dungeons.GetLength(0)];
+
+        //초기값으로 탐색 시작
+        DFS(k, dungeons,0);
+        
+        return answer;
+    }
+
+    public void DFS(int k, int[,] dungeons, int depth)
+    {
+        //모든 순서쌍을 검사하기 위해 던전의 개수만큼 반복한다
+        for(int i=0; i<dungeons.GetLength(0); i++)
+        {
+
+            //최소 필요 피로도만큼 피로도가 존재하며 아직 방문하지 않은 던전이면 다음 던전 탐색
+            if(k >= dungeons[i,0] && !isVisit[i])
+            {
+                isVisit[i] = true;
+                DFS(k - dungeons[i,1], dungeons,depth + 1);
+
+                //깊이 탐색을 마친 경우 초기값 설정을 위해 false를 할당
+                isVisit[i] = false;
+            }
+        }
+        
+        //깊이 탐색을 마친 뒤 answer(최대 깊이)보다 크다면 새롭게 할당
+        if(answer < depth){
+            answer = depth;
+        }
+    }
+}
