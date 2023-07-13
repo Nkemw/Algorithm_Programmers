@@ -1,0 +1,65 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+public class Solution {
+    public string solution(string number, int k) {
+        string answer = "";
+
+        //문자열 정리에 이용할 리스트
+        List<char> temp = new List<char>();
+        StringBuilder sb = new StringBuilder();
+
+        //현재까지 제거된 숫자 개수
+        int removeNum = 0;
+    
+       
+        
+        for(int i = 0; i < number.Length; i++){
+           
+            //먼저 리스트에 숫자를 입력한다
+            temp.Add(number[i]);
+
+            //제거된 숫자 개수가 k 미만일 때까지 반복
+            if(removeNum != k){
+
+               //리스트의 길이가 2 이상인 경우 마지막 문자와 이전 문자를 비교
+               //이전 문자의 크기가 작다면 해당 문자 삭제
+               for(int j = temp.Count-2; j >= 0; j--){
+                   if(temp[j] < temp[temp.Count-1]){
+                       temp.RemoveAt(j);
+                       removeNum++;
+                   } else if(temp[j] >= temp[temp.Count-1]){   //마지막 문자와 이전 문자가 같다면
+                       break;                                  //반복문 종료
+                   }
+
+                   //반복문 도중 제거된 숫자 개수가 k개라면 반복문 종료
+                   if(removeNum == k){
+                       break;
+                   }
+               }
+            }
+        }
+       
+        //위의 반복문에서 정리되지 않은 문자열 ex) "9977"을 정리
+        //마지막 문자부터 k개만큼 제거할 때까지 문자 제거
+        if(removeNum != k){
+            for(int i = temp.Count-1; i >= 0; i--){
+                temp.RemoveAt(i);
+                removeNum++;
+                
+                if(removeNum == k){
+                    break;
+                }
+            }
+        }
+
+        //완성된 문자열 StringBuilder에 입력 및 출력
+        for(int i = 0; i < temp.Count; i++){
+            sb.Append(temp[i]);
+        }
+        answer = sb.ToString();
+        return answer;
+    }
+    
+}
