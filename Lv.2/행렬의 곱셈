@@ -1,0 +1,21 @@
+using System;
+
+public class Solution {
+    public int[,] solution(int[,] arr1, int[,] arr2) {
+        //i*j, j*k 행렬을 곱하면 i*k 행렬이 되므로 해당 크기로 선언한다.
+        int[,] answer = new int[arr1.GetLength(0),arr2.GetLength(1)];
+        
+        //앞 행렬의 행 크기만큼 반복
+        for(int i = 0; i < arr1.GetLength(0); i++){
+            //뒷 행렬의 열 크기만큼 반복
+            for(int j = 0; j < arr2.GetLength(1); j++){
+                //행과 열을 분리했을 때 참조하는 원소의 수만큼 반복
+                for(int k = 0; k < arr1.GetLength(1); k++){
+                    //출력 행렬의 원소에 각 원소의 곱을 더하여 저장한다.
+                    answer[i, j] += arr1[i,k] * arr2[k, j];
+                }
+            }
+        }
+        return answer;
+    }
+}
