@@ -1,0 +1,41 @@
+using System;
+using System.Collections.Generic;
+public class Solution {
+    public List<int> solution(int[] progresses, int[] speeds) {
+        List<int> answer = new List<int>();
+
+        //progress와 speed 저장
+        Queue<Tuple<int, int>> progressQueue = new Queue<Tuple<int, int>>();
+
+        for(int i = 0; i < progresses.Length; i++){
+            progressQueue.Enqueue(new Tuple<int, int>(progresses[i], speeds[i]));   
+        }
+
+        //일수
+        int days = 0;
+        
+        while(progressQueue.Count > 0){
+            //해당 날에 처리된 일의 개수
+            int complete = 0;
+            
+            int temp = progressQueue.Count;
+
+            //해당 날에 진척도가 100 이상인지 검사
+            for(int i = 0; i < temp; i++){
+                if(progressQueue.Peek().Item1 + progressQueue.Peek().Item2*days >= 100){
+                    progressQueue.Dequeue();
+                    complete++;
+                } else {
+                    break;
+                }
+            }
+
+            //해당 날에 처리된 일이 있으면 출력 리스트 저장
+            if(complete > 0){
+                answer.Add(complete);
+            }
+            days++;
+        }
+        return answer;
+    }
+}
