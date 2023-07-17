@@ -1,0 +1,22 @@
+using System;
+
+public class Solution {
+    public int solution(int[] citations) {
+        int answer = 0;
+        
+        //내림차순 정렬
+        Array.Sort(citations);
+        Array.Reverse(citations);
+        
+        //h의 크기 이상, h 개수 이상을 검사한다
+        for(int i = 0; i < citations.Length; i++){
+            if(citations[i] < i+1){
+                break;
+            } else {
+                answer = i+1;
+            }
+        }
+        
+        return answer;
+    }
+}
