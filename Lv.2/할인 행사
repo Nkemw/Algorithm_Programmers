@@ -1,0 +1,43 @@
+using System;
+using System.Collections.Generic;
+
+public class Solution {
+    public int solution(string[] want, int[] number, string[] discount) {
+        int answer = 0;
+        
+        //현재 원하는 물건과 개수를 저장하는 자료구조
+        Dictionary<string, int> wantDict = new Dictionary<string, int>();
+        
+        for(int i = 0; i < discount.Length-9; i++){
+
+            //초기화
+            wantDict.Clear();
+            bool isCorrect = true;
+            for(int j = 0; j < want.Length; j++){
+                wantDict.Add(want[j], number[j]);
+            }
+
+            //discount 검사가 포함되고, 0 이상인 경우 1 차감
+            //조건문에 해당하지 않으면 연산량을 줄이기 위해 반복문 종료
+            for(int j = i; j < i+10; j++){
+                if(wantDict.ContainsKey(discount[j]) && wantDict[discount[j]] > 0){
+                    wantDict[discount[j]]--;
+                } else {
+                    break;
+                }
+            }
+            
+            //모든 원소의 개수가 0인 경우에만 answer에 1을 더해준다
+            for(int j = 0; j < want.Length; j++){
+                if(wantDict[want[j]] != 0){
+                    isCorrect = false;
+                    break;
+                }
+            }
+            if(isCorrect){
+                answer++;
+            }
+        }
+        return answer;
+    }
+}
