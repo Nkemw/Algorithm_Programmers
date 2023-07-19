@@ -1,0 +1,26 @@
+using System;
+
+public class Solution {
+    public long[] solution(int n, long left, long right) {
+        long[] answer = new long[right-left+1];
+        
+        //right와 left 값이 같은 경우를 포함한다
+        for(int i = 0; i <= right-left; i++){
+
+            //left+i를 n을 이용하여 몫과 나머지를 나누면 row와 column 값이 된다
+            long div = (left+i) / n;
+            long rest = (left+i) % n;
+            long max = 0;
+            
+            //div, rest의 최댓값은 배열에 저장된 숫자의 -1값이므로 1을 더해준다
+            if(div < rest){
+                max = rest+1;
+            } else {
+                max = div+1;
+            }
+            
+            answer[i] = max;
+        }
+        return answer;
+    }
+}
