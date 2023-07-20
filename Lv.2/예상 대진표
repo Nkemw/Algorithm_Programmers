@@ -1,0 +1,51 @@
+using System;
+
+class Solution
+{
+    public int solution(int n, int a, int b)
+    {
+        //answer의 기본값은 0 이하가 될 수 없으므로 1로 설정한다
+        int answer = 1;
+        
+
+        //중간값
+        int mid = n;
+
+        //대진표의 지수승
+        int depth = 0;
+        
+        //대진표의 지수승을 먼저 구한다
+        while(mid > 1){
+            mid /= 2;
+            depth++;
+        }
+        
+        //대진표를 반으로 나누고 변화량을 입력한다
+        mid = n/2;
+        int variation = mid;
+        
+        while(depth > 0){
+            
+            //양분했을 때 참가자가 좌, 우측으로 나뉜 경우 그 시점의 깊이를 반환
+            if(a <= mid && mid < b){
+                answer = depth;
+                break;
+            } else if(b <= mid && mid < a){
+                answer = depth;
+                break;
+            }
+            
+            //양분했을 때 모두 우측에 있다면 중간값을 증가시키며 좌측에 있다면 감소시킨다.
+            if(a > mid && b > mid){
+                variation /= 2;
+                mid = mid + variation;
+            } else {
+                variation /= 2;
+                mid = mid - variation;
+            }
+            depth--;
+        }
+
+        return answer;
+    }
+}
