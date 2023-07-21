@@ -1,0 +1,27 @@
+using System;
+
+class Solution
+{
+    int answer = 0;
+    public int solution(int n)
+    {
+        Recursion(n);
+        
+        return answer;
+    }
+    
+    public void Recursion(int n){
+        //n이 1 미만인 경우 재귀 종료
+        if(n > 0){
+
+            //n이 짝수인 경우 n/2을 재귀함수에 입력
+            //n이 홀수인 경우 answer에 1을 더해준 뒤 n-1을 재귀함수에 입력
+            if(n%2 == 0){
+                Recursion(n/2);
+            } else {
+                answer++;
+                Recursion(n-1);
+            }
+        }
+    }
+}
