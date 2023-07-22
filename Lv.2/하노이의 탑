@@ -1,0 +1,35 @@
+using System;
+using System.Collections.Generic;
+
+public class Solution {
+    List<(int, int)> moveList = new List<(int, int)>();
+    
+    public int[,] solution(int n) {
+        Move(n, 1, 2, 3);
+        
+        int[,] answer = new int[moveList.Count,2];
+        
+        for(int i = 0; i < moveList.Count; i++){
+            answer[i, 0] = moveList[i].Item1;
+            answer[i, 1] = moveList[i].Item2;
+        }
+        
+        return answer;
+    }
+    
+    void Move(int n, int start, int temp, int dest){
+        if(n > 1) {
+            //n-1개의 원판을 빈 기둥으로 옮긴다
+            Move(n-1, start, dest, temp);
+
+            //기존 기둥에 맨 아래 있던 원반을 목적지 기둥에 옮긴다
+            moveList.Add((start, dest));
+
+            //빈 기둥에 있는 n-1개의 원판을 목적지 기둥에 옮긴다
+            Move(n-1, temp, start, dest);
+        } else {
+            //하나의 원반이 옮겨질 때마다 리스트에 저장
+            moveList.Add((start, dest));
+        }
+    }
+}
