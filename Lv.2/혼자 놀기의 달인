@@ -1,0 +1,57 @@
+using System;
+
+public class Solution {
+    public int solution(int[] cards) {
+        int answer = 0;
+
+        //박스를 열었는지
+        bool[] boxOpened = new bool[cards.Length];
+        
+        //두 그룹의 원소 개수
+        int[] groupCount = new int[2];
+
+        //상자 인덱스
+        int index = 1;
+        
+        for(int i = 0; i < cards.Length; i++){
+            for(int j = i+1; j < cards.Length; j++){
+
+                //1번 그룹과 2번 그룹의 번호에 따라 그룹의 개수를 구한다
+                //인덱스, 그룹의 원소 개수를 초기화하며 상자를 모두 닫힌 상태로 지정한다
+                index = i;
+                groupCount = new int[2];
+                boxOpened = new bool[cards.Length];
+                
+                //상자가 열려있으면 반복문을 종료하며 열려있지 않다면
+                //상자 안 숫자의 인덱스를 저장하며 그룹의 개수를 1 증가시킨다
+                while(true){
+                    if(boxOpened[index]){
+                        break;
+                    } else {
+                        boxOpened[index] = true;
+                        index = cards[index]-1;
+                        groupCount[0]++;
+                    }
+                }
+                
+                //위와 동일하게 두 번째 그룹의 원소 개수를 구한다
+                index = j;
+                while(true){
+                    if(boxOpened[index]){
+                        break;
+                    } else {
+                        boxOpened[index] = true;
+                        index = cards[index]-1;
+                        groupCount[1]++;
+                    }
+                }
+                
+                //최댓값 반환
+                if(answer < groupCount[0] * groupCount[1]){
+                    answer = groupCount[0] * groupCount[1];
+                }
+            }
+        }
+        return answer;
+    }
+}
