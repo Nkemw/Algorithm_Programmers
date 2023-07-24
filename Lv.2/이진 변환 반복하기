@@ -1,0 +1,52 @@
+using System;
+using System.Text;
+using System.Collections.Generic;
+
+public class Solution {
+    public int[] solution(string s) {
+        int[] answer = new int[2];
+        
+        StringBuilder sb = new StringBuilder();
+        
+        //이진수가 1이 될 때까지 반복
+        while(!s.Equals("1")){
+
+            //이진 변환 횟수 증가
+            answer[0]++;
+            sb.Clear();
+
+            //이진수에서 0 제거 및 0 제거 횟수 증가
+            for(int i = 0; i < s.Length; i++){
+                if(s[i] == '1'){
+                    sb.Append(s[i]);
+                } else {
+                    answer[1]++;
+                }
+            }
+
+            //이진수 길이 저장
+            int strLength = sb.Length;
+            sb.Clear();
+            
+            Stack<int> binaryStack = new Stack<int>();
+
+            //이진수의 길이가 0이 될 때까지 반복, 2로 나누었을 때 나머지를 스택에 저장
+            while(strLength > 0){
+                if(strLength % 2 == 1){
+                    binaryStack.Push(1);
+                } else {
+                    binaryStack.Push(0);
+                }
+                strLength /= 2;
+            }
+            
+            //위에서 구한 이진수를 StringBuilder에 저장 및 기존 문자열에 지정
+            while(binaryStack.Count != 0){
+                sb.Append(binaryStack.Pop());
+            }
+            s = sb.ToString();
+            
+        }
+        return answer;
+    }
+}
