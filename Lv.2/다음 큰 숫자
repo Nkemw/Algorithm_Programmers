@@ -1,0 +1,46 @@
+using System;
+
+class Solution 
+{
+    public int solution(int n) 
+    {
+        //입력 정수 N를 이진 변환했을 때 1의 개수
+        int nLength = 0;
+        int temp = n;
+        
+        //1의 개수 구하기
+        while(temp > 0){
+            if(temp % 2 == 1){
+                nLength++;
+            }
+            temp /= 2;
+        }
+        
+        //N보다 큰 정수를 이진 변환했을 때 1의 개수
+        int newLength = 0;
+
+        //정수 증가량
+        int addValue = 1;
+
+        while(true){
+            temp = n + addValue;
+            newLength = 0;
+            
+            //새로운 정수 1의 개수 구하기
+            while(temp > 0){
+                if(temp % 2 == 1){
+                    newLength++;
+                }
+                temp /= 2;
+            }
+            
+            //1의 개수가 같다면 해당 정수 반환
+            if(nLength == newLength){
+                return n + addValue;
+            }
+
+            addValue++;
+        }
+        
+    }
+}
