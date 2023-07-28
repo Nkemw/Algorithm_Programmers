@@ -1,0 +1,78 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public class Solution {
+    public int[] solution(int[] fees, string[] records) {
+
+        //차량 번호를 Key로, 주차 시간을 알 수 있는 클래스를 Value로 Dictionary를 이용한다
+        Dictionary<string, ParkInfo> recordDict = new Dictionary<string, ParkInfo>();
+        
+        for(int i = 0; i < records.Length; i++){
+
+            //record와 time을 Split을 이용하여 추출한다.
+            string[] infoSplit = records[i].Split(' ');
+            string[] timeSplit = infoSplit[0].Split(':');
+            
+            //차량이 이미 존재하는 경우 들어온 시간과 나간 시간을 갱신
+            //차량이 없다면 Dictionary 추가
+            //"OUT"이 나오면 나간 시간을 갱신하여 총 주차 시간을 갱신한다.
+            if(recordDict.ContainsKey(infoSplit[1])){
+                if(infoSplit[2].Equals("IN")){
+                    recordDict[infoSplit[1]].inTime = int.Parse(timeSplit[0])*60 + int.Parse(timeSplit[1]);
+                    recordDict[infoSplit[1]].outTime = 1439;
+                    recordDict[infoSplit[1]].totalParkingTime += recordDict[infoSplit[1]].outTime - recordDict[infoSplit[1]].inTime;
+                } else {
+                    recordDict[infoSplit[1]].outTime = int.Parse(timeSplit[0])*60 + int.Parse(timeSplit[1]);
+                    recordDict[infoSplit[1]].totalParkingTime += recordDict[infoSplit[1]].outTime - 1439;
+                }
+            } else {
+                if(infoSplit[2].Equals("IN")){
+                    recordDict.Add(infoSplit[1], new ParkInfo(int.Parse(timeSplit[0])*60 + int.Parse(timeSplit[1])));
+                    recordDict[infoSplit[1]].totalParkingTime = recordDict[infoSplit[1]].outTime - recordDict[infoSplit[1]].inTime;
+                } else {
+                    recordDict[infoSplit[1]].outTime = int.Parse(timeSplit[0])*60 + int.Parse(timeSplit[1]);
+                    recordDict[infoSplit[1]].totalParkingTime += recordDict[infoSplit[1]].outTime - 1439;
+                }
+            }
+        }
+        
+        int[] answer = new int[recordDict.Count];
+
+        //번호 오름차순으로 출력하기 위해 사용한다
+        List<string> recordOrder = new List<string>();
+        
+        //번호를 저장한 뒤 정렬
+        foreach(string carID in recordDict.Keys){
+            recordOrder.Add(carID);
+        }
+        
+        recordOrder.Sort();
+        
+
+        //번호에 따른 주차 요금 부과
+        for(int i = 0; i < recordOrder.Count; i++){
+            if(recordDict[recordOrder[i]].totalParkingTime > fees[0]){
+                double temp = (double)(recordDict[recordOrder[i]].totalParkingTime - fees[0]) / (double) fees[2];
+                answer[i] = fees[1] + (int) Math.Ceiling(temp) * fees[3];
+            } else {
+                answer[i] = fees[1];
+            }
+        }
+        return answer;
+    }
+    
+}
+
+//주차 시간에 관한 클래스 - 총 주차 시간, 들어온 시간, 나간 시간
+public class ParkInfo{
+    public int totalParkingTime;
+    public int inTime;
+    public int outTime;
+    
+    public ParkInfo(int inTime){
+        //차량이 들어왔다면 나간 시간을 최대 시간인 23:59로 간주
+        this.inTime = inTime;
+        this.outTime = 1439;
+    }
+}
