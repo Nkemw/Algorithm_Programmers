@@ -1,0 +1,53 @@
+using System;
+using System.Collections.Generic;
+public class Solution {
+    
+    int answer = 51;            //최댓값은 words.Length이므로 최솟값을 찾기 위해 words+1 설정
+    bool[] isVisited;           //방문한 words 원소들
+    bool isCanChange = false;   //다음 단어로 변경할 수 있는지
+    int wordCount = 0;          //같은 알파벳 문자 수
+    
+    public int solution(string begin, string target, string[] words) {
+        
+        isVisited = new bool[words.Length];
+        Dfs(begin, target, words, 0);
+        
+        //target으로 변경할 수 없는 경우
+        if(answer == 51){
+            answer = 0;
+        }
+        return answer;
+    }
+    
+    public void Dfs(string begin, string target, string[] words, int depth){
+        
+        //최소 단계로 시작 단어를 target으로 변경
+        if(begin.Equals(target) && answer > depth){
+            answer = depth;
+            return;
+        }
+        
+        for(int i = 0; i < words.Length; i++){
+
+            //변경가능한지 검사
+            wordCount = 0;
+            isCanChange = false;
+            for(int j = 0; j < words[i].Length; j++){
+                if(begin[j] == words[i][j]){
+                    wordCount++;
+                }
+            }
+            
+            if(wordCount == begin.Length-1){
+                isCanChange = true;
+            }
+            
+            //다음 문자로 변경
+            if(!isVisited[i] && isCanChange){
+                isVisited[i] = true;
+                Dfs(words[i], target, words, depth+1);
+                isVisited[i] = false;
+            }
+        }
+    }
+}
