@@ -1,0 +1,32 @@
+using System;
+public class Solution {
+    public int solution(int[] A, int[] B) {
+        int answer = 0;
+        
+        //각 배열 오름차순 정렬
+        Array.Sort(A);
+        Array.Sort(B);
+        
+        //B 배열 포인터
+        int index = 0;
+
+        //A를 원소보다 큰 B의 최솟값 탐색
+        for(int i = 0; i < A.Length; i++){
+            for(int j = index; j < B.Length; j++){
+
+                //B의 최솟값을 찾았다면 해당 원소 다음부터 탐색하도록 설정
+                //A의 원소보다 큰 값이 없다면 내부 반복문을 돌릴 수 없게 설정
+                if(B[j] > A[i]){
+                    answer++;
+                    index = j+1;
+                    break;
+                } else if(j == B.Length-1){
+                    index = B.Length;
+                }
+                
+            }
+        }
+        
+        return answer;
+    }
+}
