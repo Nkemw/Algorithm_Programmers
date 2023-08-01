@@ -1,0 +1,61 @@
+using System;
+using System.Collections.Generic;
+
+public class Solution {
+    public List<int> solution(string[] genres, int[] plays) {
+        List<int> answer = new List<int>();
+        
+        //장르를 키값으로 고유 번호와 재생 횟수를 참조할 수 있도록 Dictionary 사용
+        Dictionary<string, PlayInfo> info = new Dictionary<string, PlayInfo>();
+        
+        //장르를 키값으로 Dictionary 매핑
+        for(int i = 0; i < genres.Length; i++){
+
+            //이미 해당 키가 존재한다면 새로운 곡을 저장한 뒤 총 재생 횟수 갱신 및 내림차순 정렬
+            //키가 존재하지 않으면 새롭게 곡을 등록
+            if(info.ContainsKey(genres[i])){
+                info[genres[i]].playCount.Add(new Tuple<int, int>(i, plays[i]));
+                info[genres[i]].totalPlayCount += plays[i];
+                
+                info[genres[i]].playCount.Sort((a, b) => b.Item2.CompareTo(a.Item2));
+            } else {
+                info.Add(genres[i], new PlayInfo(new Tuple<int, int>(i, plays[i])));
+            }
+        }
+        
+        //키: 장르 / 값: 총 재생 횟수
+        List<Tuple<string, int>> playList = new List<Tuple<string, int>>();
+ 
+        foreach (string key in info.Keys)
+        {
+            playList.Add(new Tuple<string, int>(key, info[key].totalPlayCount));
+        }
+        
+        //재생횟수를 기준으로 내림차순 정렬
+        playList.Sort((a, b) => b.Item2.CompareTo(a.Item2));
+        
+        //재생횟수가 높은 순서대로 고유번호를 저장
+        for(int i = 0; i < playList.Count; i++){
+            answer.Add(info[playList[i].Item1].playCount[0].Item1);
+            if(info[playList[i].Item1].playCount.Count > 1){
+                answer.Add(info[playList[i].Item1].playCount[1].Item1);
+            }
+        }
+        
+        return answer;
+    }
+}
+
+//장르를 키로 얻을 수 있는 정보
+public class PlayInfo{
+    // <고유번호, 재생횟수>
+    public List<Tuple<int, int>> playCount = new List<Tuple<int, int>>();
+
+    // 총 재생 횟수
+    public int totalPlayCount;
+    
+    public PlayInfo(Tuple<int, int> playCount){
+        this.playCount.Add(playCount);
+        totalPlayCount += playCount.Item2;
+    }
+}
