@@ -1,0 +1,88 @@
+using System;
+using System.Collections.Generic;
+public class Solution {
+    public int solution(string s) {
+        int answer = 0;
+        
+        //왼쪽으로 회전시키는 양
+        int start = 0;
+        
+        //문제에서 주어진 s.Length-1 까지 회전
+        while(start < s.Length){
+            Stack<char> st = new Stack<char>();
+            
+            for(int i = start; i < s.Length; i++){
+                
+                //왼쪽으로 회전시킨 크기를 제외한 나머지 괄호 검사
+                //올바른 문자열이 만들어졌다면 해당 괄호 제거
+                //이외는 모두 스택에 추가
+                switch(s[i]){
+                    case ')':
+                        if(st.Count > 0 && st.Peek() == '('){
+                            st.Pop();
+                        } else {
+                            st.Push(s[i]);
+                        }
+                        break;
+                    case ']':
+                        if(st.Count > 0 && st.Peek() == '['){
+                            st.Pop();
+                        } else {
+                            st.Push(s[i]);
+                        }
+                        break;
+                    case '}':
+                        if(st.Count > 0 && st.Peek() == '{'){
+                            st.Pop();
+                        } else {
+                            st.Push(s[i]);
+                        }
+                        break;
+                    default:
+                        st.Push(s[i]);
+                        break;
+                }
+                
+            }
+            
+            //왼쪽으로 회전시킨 괄호 연산, 위와 동일하게 처리
+            for(int shift = 0; shift < start; shift++){
+                switch(s[shift]){
+                    case ')':
+                        if(st.Count > 0 && st.Peek() == '('){
+                            st.Pop();
+                        } else {
+                            st.Push(s[shift]);
+                        }
+                        break;
+                    case ']':
+                        if(st.Count > 0 && st.Peek() == '['){
+                            st.Pop();
+                        } else {
+                            st.Push(s[shift]);
+                        }
+                        break;
+                    case '}':
+                        if(st.Count > 0 && st.Peek() == '{'){
+                            st.Pop();
+                        } else {
+                            st.Push(s[shift]);
+                        }
+                        break;
+                    default:
+                        st.Push(s[shift]);
+                        break;
+                }
+            }
+            
+            //스택이 비어있다면 올바른 문자열
+            if(st.Count == 0){
+                answer++;
+            }
+                
+            start++;
+            
+        }
+        return answer;
+    }
+}
