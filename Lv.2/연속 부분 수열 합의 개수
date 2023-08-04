@@ -1,0 +1,41 @@
+using System;
+using System.Collections.Generic;
+public class Solution {
+    public int solution(int[] elements) {
+        int answer = 0;
+        
+        //유일한 부분 수열의 합을 저장
+        Dictionary<int, int> numDict = new Dictionary<int, int>();
+        
+        //1~n까지 부분 수열의 합을 저장
+        int[,] dp = new int[elements.Length, elements.Length];
+        
+        for(int i = 0; i < elements.Length; i++){
+            for(int j = 0; j < elements.Length; j++){
+
+                //초기값은 부분 수열의 원소값을 저장
+                if(i == 0){
+                    dp[i, j] = elements[j];
+                } else {
+                 
+                    //배열 크기를 벗어나지 않게 설정한 뒤 일반항으로 부분 수열의 합을 모두 저장
+                    if(i+j >= elements.Length){
+                        dp[i, j] = dp[i-1, j] + elements[i+j - elements.Length];
+                    } else {
+                        dp[i, j] = dp[i-1, j] + elements[i+j];
+                    }
+                }
+                
+                //유일성 확인
+                if(!numDict.ContainsKey(dp[i, j])){
+                    numDict.Add(dp[i, j], 1);
+                }
+            }
+        }
+        
+        //Dictionary 크기 반환
+        answer = numDict.Count;
+        
+        return answer;
+    }
+}
