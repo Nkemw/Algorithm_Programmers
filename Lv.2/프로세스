@@ -1,0 +1,51 @@
+using System;
+using System.Collections.Generic;
+public class Solution {
+    public int solution(int[] priorities, int location) {
+        int answer = 0;
+        
+        // <우선순위, 인덱스>
+        Queue<Tuple<int, int>> queue = new Queue<Tuple<int, int>>();
+        
+        // 큐의 초기 상태 설정
+        for(int i = 0; i < priorities.Length; i++){
+            queue.Enqueue(new Tuple<int, int>(priorities[i], i));
+        }
+        
+        // 위치가 location인 자료가 출력될 때까지 반복
+        for(int i = 0; i < priorities.Length; i++){
+
+            //우선순위 값이 가장 높은 자료
+            Tuple<int, int> max = new Tuple<int, int>(0, 0);
+            answer++;
+
+            //현재 큐 포인터 (큐의 인덱스값을 저장)
+            int pointer = -1;
+
+            //큐를 한 바퀴 돌며 꺼낼 자료의 우선순위가 최대인 자료의 정보를 저장
+            for(int j = 0; j < queue.Count; j++){
+                if(queue.Peek().Item1 > max.Item1){
+                    max = queue.Peek();
+                    pointer = j;
+                }
+               
+                queue.Enqueue(queue.Dequeue());
+            }
+            
+            //우선순위가 최대인 자료가 location에 있는 자료라면 완료
+            if(max.Item2 == location){
+                break;
+            }
+            
+            //우선순위가 최대인 자료를 찾기까지 다른 자료를 큐 뒷단에 붙이고 최대인 자료는 제거
+            for(int j = 0; j <= pointer; j++){
+                if(j == pointer){
+                    queue.Dequeue();
+                } else {
+                    queue.Enqueue(queue.Dequeue());
+                }
+            }
+        }
+        return answer;
+    }
+}
