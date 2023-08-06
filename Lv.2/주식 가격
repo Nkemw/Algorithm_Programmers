@@ -1,0 +1,35 @@
+using System;
+using System.Collections.Generic;
+
+public class Solution {
+    public int[] solution(int[] prices) {
+        int[] answer = new int[prices.Length]; 
+        
+        // <인덱스, 주식가격>
+        Stack<Tuple<int, int>> stack = new Stack<Tuple<int,int>>();
+        
+        // 초기 출력값 설정
+        for(int i = 0; i < prices.Length; i++){
+            answer[i] = prices.Length-1-i;
+        }
+        
+        //스택에 쌓고 스택 값보다 다음 주식 가격이 낮다면
+        //스택의 인덱스에 스택의 인덱스와 주식 가격 인덱스의 차를 저장한다
+        //이후 주식 가격을 스택에 저장한다
+        for(int i = 0; i < prices.Length; i++){
+            while(true){
+                if(stack.Count > 0 && stack.Peek().Item2 > prices[i]){
+                    answer[stack.Peek().Item1] = i - stack.Peek().Item1;
+                    stack.Pop();
+                } else {
+                    break;
+                }
+            }
+            
+            stack.Push(new Tuple<int, int>(i, prices[i]));
+            
+        }
+        
+        return answer;
+    }
+}
