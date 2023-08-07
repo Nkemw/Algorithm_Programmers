@@ -1,0 +1,36 @@
+using System;
+
+public class Solution {
+    public int solution(string skill, string[] skill_trees) {
+        int answer = 0;
+
+        for(int i = 0; i < skill_trees.Length; i++){
+
+            //스킬 문자열 포인터
+            int skillIndex = 0;
+            
+            //순서를 지키는 문자열인지
+            bool isCorrect = true;
+                
+            //스킬 트리 각 문자열을 검사
+            for(int j = 0; j < skill_trees[i].Length; j++){
+
+                //스킬 문자열에 존재하는 문자라면 순서를 지키는 지 확인한다
+                if(skill.Contains(skill_trees[i][j])){
+                    if(skill[skillIndex] == skill_trees[i][j]){
+                        skillIndex++;
+                    } else {
+                        isCorrect = false;
+                    }
+                }
+            }
+                   
+            //스킬 트리 문자열의 모든 탐색을 거쳐 순서를 지킨 문자열인지 검사
+            if(isCorrect){
+                answer++;
+            }
+        }
+        
+        return answer;
+    }
+}
