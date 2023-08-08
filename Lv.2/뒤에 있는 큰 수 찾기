@@ -1,0 +1,26 @@
+using System;
+using System.Collections.Generic;
+
+public class Solution {
+    public int[] solution(int[] numbers) {
+        int[] answer = new int[numbers.Length];
+        
+        // <인덱스, 값>
+        Stack<Tuple<int, int>> stack = new Stack<Tuple<int, int>>();
+       
+        for(int i = 0; i < numbers.Length; i++){
+            answer[i] = -1;
+  
+            //스택에 자료가 있으며 입력 배열의 원솟값이 큰 경우
+            //스택 자료가 저장한 위치를 출력 배열에 대입하여 입력 배열의 원솟값을 저장
+            while(stack.Count > 0 && stack.Peek().Item2 < numbers[i]){
+                answer[stack.Pop().Item1] = numbers[i];
+            }
+            
+            //위의 반복문을 거친 뒤 스택에 입력 배열 원솟값 저장
+            //스택은 항상 정렬되어있는 상태로 유지할 수 있다.
+            stack.Push(new Tuple<int, int>(i, numbers[i]));
+        }
+        return answer;
+    }
+}
