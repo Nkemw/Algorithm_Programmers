@@ -1,0 +1,39 @@
+using System;
+
+public class Solution {
+    
+    bool[] visited = new bool[5];
+    string[] wordDict = {"A", "E", "I", "O", "U"};
+    int answer = 0;
+    int count = 0;
+    public int solution(string word) {
+            
+        Dfs(word, "", 0);
+        return answer;
+    }
+    
+    void Dfs(string target, string curStr, int depth){
+        //깊이와 상관없이 단어가 같은지 비교
+        if(target.Equals(curStr)){
+
+            //단어가 같은 시점의 count를 출력
+            answer = count;
+            return;
+        }
+
+        if(depth < 5){
+            for(int i = 0; i < wordDict.Length; i++){
+                
+                //탐색할 때마다 count에 1을 더해준다
+                count++;
+
+                //DFS
+                if(!visited[depth]){
+                    visited[depth] = true;
+                    Dfs(target, curStr + wordDict[i], depth+1);
+                    visited[depth] = false;
+                }
+            }
+        }
+    }
+}
