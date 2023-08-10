@@ -1,0 +1,47 @@
+using System;
+using System.Collections.Generic;
+public class Solution {
+    public int solution(int[] topping) {
+        int answer = 0;
+        
+        //배열을 둘로 나눴을 때 왼쪽, 오른쪽에 해당하는 정보를 저장
+        Dictionary<int, int> leftDict = new Dictionary<int, int>();
+        Dictionary<int, int> rightDict = new Dictionary<int, int>();
+        
+        //우측 사전에 모든 정보 저장
+        for(int i = 0; i < topping.Length; i++){
+            if(rightDict.ContainsKey(topping[i])){
+                rightDict[topping[i]] += 1;
+            } else {
+                rightDict.Add(topping[i], 1);
+            }
+        }
+        
+        for(int i = 0; i < topping.Length; i++){
+            //좌측 사전의 종류가 더 많다면 반복문 종료
+            if(leftDict.Count > rightDict.Count){
+                break;
+            }
+            
+            //우측 사전의 정보 제거
+            if(rightDict[topping[i]] == 1){
+                rightDict.Remove(topping[i]);
+            } else {
+                rightDict[topping[i]] -= 1;
+            }
+            
+            //좌측 사전의 정보 추가
+            if(leftDict.ContainsKey(topping[i])){
+                leftDict[topping[i]] += 1;
+            } else {
+                leftDict.Add(topping[i], 1);
+            }
+            
+            //종류가 같은 경우 출력 정수에 1 더해준다.
+            if(leftDict.Count == rightDict.Count){
+                answer++;
+            }
+        }
+        return answer;
+    }
+}
