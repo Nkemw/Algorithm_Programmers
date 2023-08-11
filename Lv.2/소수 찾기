@@ -1,0 +1,67 @@
+using System;
+using System.Collections.Generic;
+public class Solution {
+    int answer = 0;
+    bool[] visited;
+
+    //숫자 문자열의 사용된 숫자
+    bool[] used;
+
+    //중복 검사를 위해 소수에 대한 리스트 사용
+    List<int> primeList = new List<int>();
+
+    public int solution(string numbers) {
+        
+        visited = new bool[numbers.Length];
+        used = new bool[numbers.Length];
+        Dfs(numbers, "", 0);
+        
+        answer = primeList.Count;
+        
+        return answer;
+    }
+    
+    void Dfs(string numbers, string currentNum, int depth){
+
+        //모든 경우에 대해 소수 판별 후 리스트 추가
+        if(depth == numbers.Length){
+            if(currentNum.Length > 0 && isPrime(int.Parse(currentNum)) && !primeList.Contains(int.Parse(currentNum))){
+                primeList.Add(int.Parse(currentNum));
+            }
+            return;
+        } else {
+            if(currentNum.Length > 0 && isPrime(int.Parse(currentNum)) && !primeList.Contains(int.Parse(currentNum))){
+                primeList.Add(int.Parse(currentNum));
+            }
+            for(int i = 0; i < numbers.Length; i++){
+
+                //방문 정점과 사용된 숫자 검사
+                if(!visited[depth] && !used[i]){
+                    visited[depth] = true;
+                    used[i] = true;
+                    Dfs(numbers, currentNum + numbers[i].ToString(), depth+1);
+                    visited[depth] = false;
+                    used[i] = false;
+                }
+            }
+        }
+    }
+    
+    //소수 판별 함수
+    bool isPrime(int num){
+        
+        bool isDivide = false;
+        for(int i = 2; i*i <= num; i++){
+            if(num % i == 0){
+                isDivide = true;
+                break;
+            }
+        }
+        
+        if(isDivide || num < 2){
+            return false;
+        } else {
+            return true;
+        }
+    }
+}
