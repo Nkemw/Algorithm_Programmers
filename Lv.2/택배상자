@@ -1,0 +1,40 @@
+using System;
+using System.Collections.Generic;
+
+public class Solution {
+    public int solution(int[] order) {
+        int answer = 0;
+        
+        Stack<int> stack = new Stack<int>();
+        
+        //반복문 종료 플래그
+        bool isFinish = false;
+        
+        for(int i = 1; i < order.Length+1; i++){
+            stack.Push(i);
+
+            while(stack.Count > 0){
+
+                //현재 상자 번호가 순서 값보다 큰 경우 반복문 종료
+                if(stack.Peek() > order[answer]){
+                    isFinish = true;
+                    break;
+                }
+
+                //현재 상자 번호가 순서 값과 같은 경우 상자를 싣는다.
+                //순서 값이 더 큰 경우는 무시하고 다음 상자 번호와 비교
+                if(stack.Peek() == order[answer]){
+                    answer++;
+                    stack.Pop();
+                } else {
+                    break;
+                }
+            }
+            
+            if(isFinish){
+                break;
+            }
+        }
+        return answer;
+    }
+}
