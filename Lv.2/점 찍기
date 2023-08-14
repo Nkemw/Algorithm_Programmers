@@ -1,0 +1,15 @@
+using System;
+
+public class Solution {
+    public long solution(int k, int d) {
+        long answer = 0;
+        
+        for(long x = 0; x*k <= d; x++){
+
+            //long 타입으로 캐스팅
+            answer += (long)Math.Sqrt((long)d*d - Math.Pow(x*k, 2))/k + 1;
+
+        }
+        return answer;
+    }
+}
