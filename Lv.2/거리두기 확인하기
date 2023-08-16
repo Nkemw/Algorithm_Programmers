@@ -1,0 +1,83 @@
+using System;
+using System.Collections.Generic;
+public class Solution {
+    public int[] solution(string[,] places) {
+        
+        //각 대기실은 거리두기가 지켜진 상태로 간주하고 조건을 충족하지 않으면 0으로 변경
+        int[] answer = {1, 1, 1, 1, 1};
+        
+        //각 대기실에 대해 반복
+        for(int i = 0; i < places.GetLength(0); i++){
+            
+            //Person 좌표 리스트
+            List<Tuple<int, int>> pList = new List<Tuple<int, int>>();
+            
+            //대기실에 P의 좌표 입력
+            for(int j = 0; j < places.GetLength(1); j++){
+                for(int k = 0; k < places[i, j].Length; k++){
+                    if(places[i, j][k] == 'P'){
+                        pList.Add(new Tuple<int, int>(j, k));
+                    }
+                }
+            }
+            
+            //P 좌표 비교 반복문
+            for(int j = 0; j < pList.Count; j++){
+                
+                //기준 좌표
+                Tuple<int, int> basePos = pList[j];
+
+                //거리두기가 지켜졌는지
+                bool isCorrect = true;
+                
+                for(int k = j+1; k < pList.Count; k++){
+
+                    //비교 좌표
+                    Tuple<int, int> targetPos = pList[k];
+                    
+                    //맨하튼 거리가 1인 경우 거리두기가 지켜지지 않음
+                    if(Math.Abs(basePos.Item1 - targetPos.Item1) + Math.Abs((basePos.Item2 - targetPos.Item2)) == 1){
+                        answer[i] = 0;
+                        isCorrect = false;
+                        break;
+                    }
+                    
+                    //맨하튼 거리가 2인 경우
+                    if(Math.Abs(basePos.Item1 - targetPos.Item1) + Math.Abs((basePos.Item2 - targetPos.Item2)) == 2){
+                       
+                        //대각선으로 이루어진 경우 (a, b) (c, d)라면 (a, d) (c, b) 중 하나라도 O면 거리두기가 지켜지지 않음
+                        if(places[i, basePos.Item1][targetPos.Item2] == 'O' || places[i, targetPos.Item1][basePos.Item2] == 'O'){
+                            answer[i] = 0;
+                            isCorrect = false;
+                            break;
+                        }
+                        
+                        //직선으로 이루어진 경우 사이에 O가 있다면 거리두기가 지켜지지 않음
+                        if(Math.Abs(basePos.Item1 - targetPos.Item1) == 2){
+                            //세로인 경우
+                            if(places[i, (basePos.Item1+targetPos.Item1)/2][basePos.Item2] == 'O'){
+                                answer[i] = 0;
+                                isCorrect = false;
+                                break;
+                            }
+                        } else if(Math.Abs(basePos.Item2 - targetPos.Item2) == 2){
+                            //가로인 경우
+                            if(places[i, basePos.Item1][(basePos.Item2+targetPos.Item2)/2] == 'O'){
+                                answer[i] = 0;
+                                isCorrect = false;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    
+                }
+                
+                if(!isCorrect){
+                    break;
+                }
+            }
+        }
+        return answer;
+    }
+}
