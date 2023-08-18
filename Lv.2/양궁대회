@@ -1,0 +1,102 @@
+using System;
+
+public class Solution {
+    
+    int[] answer = new int[11];     //최종 결과
+    int[] lion = new int[11];       //사용자가 각 점수마다 쏜 점수 기록
+    int max = -1;                   //최대 점수 차이
+    bool[] visited = new bool[11];  //방문한 정점
+    public int[] solution(int n, int[] info) {
+    
+        
+        dfs(n, 0, info, 0);     
+
+        //이길 방법이 없으면 -1 출력
+        if(max <= 0){
+            answer = new int[1];
+            answer[0] = -1;
+        }
+        return answer;
+    }
+    
+    public void dfs(int n, int arrowCount, int[] info, int index){
+
+        //사용 가능한 화살이 있고 탐색할 정점이 남아있는 경우
+        if(arrowCount < n && index < info.Length){
+
+            //화살을 쓰지 않거나 이길 수 있을 만큼의 화살을 사용하는 경우로 나누어 탐색
+            for(int i = 0; i < 2; i++){
+                if(!visited[index]){
+                    visited[index] = true;
+                    switch(i){
+                        case 0:
+                            dfs(n, arrowCount, info, index+1);
+                            break;
+                        case 1:
+                            if(arrowCount+info[index]+1 <= n){
+                                lion[index] = info[index]+1;
+                                dfs(n, arrowCount + lion[index], info, index+1);
+                            }
+                            break;
+                    }
+                    lion[index] = 0;
+                    visited[index] = false;
+                    
+                }
+            }
+            
+            
+        } else {
+          
+            //화살을 모두 사용하지 않았으면 0점에 남아있는 화살 추가
+            if(arrowCount != n){
+                lion[10] = n-arrowCount;
+            }
+
+            //임시 점수 차이
+            int result = 0;
+
+            //점수 비교
+            for(int i = 0; i < answer.Length; i++){
+                if(info[i] != 0 || lion[i] != 0){
+                    if(info[i] < lion[i]){
+                        result += 10-i;
+                    } else {
+                        result -= 10-i;
+                    }
+                }
+            }
+            
+            //기존 점수 차이보다 큰 경우
+            if(result > max){
+                
+                //점수 차이값과 각 점수마다 사용한 화살의 개수를 기록
+                max = result;
+                for(int i = 0; i < answer.Length; i++){
+                    answer[i] = lion[i];
+                }
+                
+            } else if(result == max){
+                
+                //점수 차이가 같은 경우
+                //가장 낮은 점수부터 화살의 개수를 비교하여 기존보다 개수가 많으면 변경
+
+                bool isChange = false;
+                for(int i = answer.Length-1; i >= 0; i--){
+                    if(lion[i] > answer[i]){
+                        isChange = true;
+                        break;
+                    } else if(lion[i] < answer[i]){
+                        break;
+                    }
+                }
+                if(isChange){
+                    for(int i = 0; i < answer.Length; i++){
+                        answer[i] = lion[i];
+                    }
+                }
+            }
+            
+        }
+    }
+}
