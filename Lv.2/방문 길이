@@ -1,0 +1,87 @@
+using System;
+using System.Collections.Generic;
+public class Solution {
+    public int solution(string dirs) {
+        int answer = 0;
+
+        //<x, y, dir>
+        HashSet<Tuple<int, int, char>> uniquePath = new HashSet<Tuple<int, int, char>>();
+        
+        //현재 좌표
+        int[,] currentPos = {{0, 0}};
+        
+        for(int i = 0; i < dirs.Length; i++){
+
+            //이동 연산이 범위를 벗어나는지
+            bool isRange = false;
+
+            //지도 범위에 맞게 이동 연산 검사
+            switch(dirs[i]){
+                case 'U':
+                    if(currentPos[0, 1] < 5){
+                        currentPos[0, 1] += 1;
+                        isRange = true;
+                    }
+                    break;
+                case 'D':
+                    if(currentPos[0, 1] > -5){
+                        currentPos[0, 1] -= 1;
+                        isRange = true;
+                    }
+                    break;
+                case 'R':
+                    if(currentPos[0, 0] < 5){
+                        currentPos[0, 0] += 1;
+                        isRange = true;
+                    }
+                    break;
+                case 'L':
+                    if(currentPos[0, 0] > -5){
+                        currentPos[0, 0] -= 1;
+                        isRange = true;
+                    }
+                    break;
+
+            }
+
+            //이동이 가능한 경우만 중복을 검사하여 새로운 길인지 검사
+            if(isRange){
+                //현 위치에서 다음으로 이동하는 정보
+                Tuple<int, int, char> nextInfo = new Tuple<int, int, char>(currentPos[0, 0],currentPos[0, 1], dirs[i]);
+
+                //해당 좌표에서 반대 방향으로 같은 경로가 존재하는지 검사
+                //같은 방향이라면 HashSet의 특징에 의해 추가되지 않음
+                switch(dirs[i]){
+                    case 'U':
+                        if(!uniquePath.Contains(new Tuple<int, int, char>(nextInfo.Item1, nextInfo.Item2-1, 'D'))){
+                            uniquePath.Add(nextInfo);
+                        }
+                        break;
+                    case 'D':
+                        if(!uniquePath.Contains(new Tuple<int, int, char>(nextInfo.Item1, nextInfo.Item2+1, 'U'))){
+                            uniquePath.Add(nextInfo);
+                        }
+                        break;
+                    case 'R':
+                        if(!uniquePath.Contains(new Tuple<int, int, char>(nextInfo.Item1-1, nextInfo.Item2, 'L'))){
+                            uniquePath.Add(nextInfo);
+                        }
+                        break;
+                    case 'L':
+                        if(!uniquePath.Contains(new Tuple<int, int, char>(nextInfo.Item1+1, nextInfo.Item2, 'R'))){
+                            uniquePath.Add(nextInfo);
+                        }
+                        break;
+
+                }
+            }
+            
+            
+        }
+        
+        //중복되지 않은 길의 개수를 반환
+        answer = uniquePath.Count;
+
+        return answer;
+    }
+}
