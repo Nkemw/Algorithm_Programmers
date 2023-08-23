@@ -1,0 +1,41 @@
+using System;
+
+public class Solution {
+    public long solution(int n, int[] times) {
+        long answer = 0;
+        
+        //각 심사대에 소요 시간을 정렬
+        Array.Sort(times);
+        
+        //이분 탐색의 최소, 최대 시간을 지정한다
+        //최소: 1명이 1분에 끝나는 경우, 최대: n명이 가장 빨리 끝나는 심사대에서 심사
+        long min = 1;
+        long max = times[0] * (long)n;
+        
+        //이분 탐색
+        while(min <= max){
+
+            //해당 시간에 심사가 끝나는 인원
+            long countByTime = 0;
+            long mid = (min+max)/2;
+
+            //반복문을 통해 해당 시간에 심사가 끝나는 인원을 계산
+            for(int i = 0; i < times.Length; i++){
+                countByTime += mid / (long) times[i];
+            }
+ 
+            //목표 인원 수보다 적다면 최소 시간을 중간값보다 1 큰 값으로 설정하여 다시 계산
+            //목표 인원 수보다 크다면 최대 시간을 중간값보다 1 작은 값으로 설정하여 다시 계산
+            if(countByTime < n){
+                min = mid + 1;
+                
+            } else {
+                max = mid - 1;
+            }
+        }
+        
+        //위의 이분 탐색으로 얻어낸 최소 시간을 반환
+        answer = min;
+        return answer;
+    }
+}
