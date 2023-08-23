@@ -1,0 +1,57 @@
+using System;
+using System.Collections.Generic;
+public class Solution {
+    public int solution(string[,] book_time) {
+        int answer = 0;
+        
+        //예약 수가 1인 경우 바로 출력
+        if(book_time.GetLength(0) == 1){
+            return 1;
+        }
+        
+        // <입장 시간, 종료 시간>
+        List<Tuple<int, int>> timeList = new List<Tuple<int, int>>();
+        
+        // 문자열 시간을 정수로 변환하여 저장, 종료 시간은 10을 더한다
+        for(int i = 0; i < book_time.GetLength(0); i++){
+            string[] split_start = book_time[i, 0].Split(':');
+            string[] split_end = book_time[i, 1].Split(':');
+            
+            timeList.Add(new Tuple<int, int>(int.Parse(split_start[0])*60 + int.Parse(split_start[1]), 
+                                             int.Parse(split_end[0])*60 + int.Parse(split_end[1]) + 10));
+        }
+        
+        //입장 시간을 기준으로 오름차순 정렬
+        timeList.Sort((a, b) => a.Item1.CompareTo(b.Item1));
+
+        //현재 대실된 객실, 이용 종료 시간을 저장
+        List<int> minList = new List<int>();
+        
+        //초기값 설정, 가장 빠른 입장 시간 정보의 종료 시간을 입력
+        minList.Add(timeList[0].Item2);
+
+        
+        for(int i = 1; i < timeList.Count; i++){    
+            
+            //가장 빠른 종료 시간이 다음 손님 입장 시간보다 느린 경우
+            //해당 객실을 다음 손님 종료 시간으로 설정
+            if(minList[0] <= timeList[i].Item1){
+                minList[0] = timeList[i].Item2;
+            } else {
+                //가장 빠른 종료 시간이 다음 손님 입장 시간보다 빠른 경우 
+                //새로운 객실을 배정
+                minList.Add(timeList[i].Item2);
+            }
+            
+            //최대값 갱신
+            if(answer < minList.Count){
+                answer = minList.Count;
+            }
+            
+            //객실 정보 오름차순 정렬
+            minList.Sort();
+        }
+        
+        return answer;
+    }
+}
