@@ -1,0 +1,61 @@
+using System;
+
+class Solution
+{
+    public int solution(int[] sticker)
+    {
+        int answer = 0;
+
+        //스티커의 총 개수가 2개 이하인 경우
+        if(sticker.Length <= 2){
+            if(sticker.Length == 1){
+                return sticker[0];
+            } else {
+                if(sticker[0] > sticker[1]){
+                    return sticker[0];
+                } else {
+                    return sticker[1];
+                }
+            }
+        }
+
+        //1번째 스티커를 떼어냈을 때 최댓값을 저장하는 배열
+        int[] dp_odd = new int[sticker.Length-1];
+
+        //2번째 스티커를 떼어냈을 때 최댓값을 저장하는 배열
+        int[] dp_even = new int[sticker.Length];
+        
+        //초기값 설정
+        dp_odd[0] = sticker[0];
+        dp_odd[1] = sticker[0];
+        dp_even[0] = 0;
+        dp_even[1] = sticker[1];
+        
+        //1번째 스티커를 떼어냈을 때 최댓값을 저장
+        for(int i = 2; i < dp_odd.Length; i++){
+            if(dp_odd[i-2] + sticker[i] < dp_odd[i-1]){
+                dp_odd[i] = dp_odd[i-1];
+            } else {
+                dp_odd[i] = dp_odd[i-2] + sticker[i];
+            }
+        }
+
+        //2번째 스티커를 떼어냈을 때 최댓값을 저장
+        for(int i = 2; i < dp_even.Length; i++){
+            if(dp_even[i-2] + sticker[i] < dp_even[i-1]){
+                dp_even[i] = dp_even[i-1];
+            } else {
+                dp_even[i] = dp_even[i-2] + sticker[i];
+            }
+        }
+        
+        //1번째 스티커를 떼어냈을 때와 2번째 스티커를 떼어냈을 때의 최댓값을 비교
+        if(dp_odd[dp_odd.Length-1] > dp_even[dp_even.Length-1]){
+            answer = dp_odd[dp_odd.Length-1];
+        } else {
+            answer = dp_even[dp_even.Length-1];
+        }
+        
+        return answer;
+    }
+}
