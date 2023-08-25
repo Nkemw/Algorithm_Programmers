@@ -1,0 +1,60 @@
+using System;
+using System.Collections.Generic;
+
+public class Solution {
+    
+    //체스판에서 퀸이 놓일 수 있는지에 대한 정보
+    int[,] queenRange;
+    int answer = 0;
+    
+    public int solution(int n) {
+        
+        queenRange = new int[n,n];
+        Dfs(n, 0);
+        
+        return answer;
+    }
+    
+    public void Dfs(int n, int depth){
+        if(depth < n){
+            for(int i = 0; i < n; i++){
+
+                //퀸을 놓을 수 있는 경우
+                if(queenRange[depth, i] == 0){
+
+                    //해당 자리를 1로 활성화
+                    //그 다음 퀸의 범위에 해당하는 칸을 1 증가 후 다음 정점 탐색
+                    queenRange[depth, i] = 1;
+                    ChangeQueenRange(n, depth, i, 1);
+                    Dfs(n, depth+1);
+
+                    //정점 탐색 종료 후 퀸의 범위에 해당하는 칸을 1 감소
+                    //이후 퀸 비활성화
+                    ChangeQueenRange(n, depth, i, -1);
+                    queenRange[depth, i] = 0;
+                }
+                
+            }
+        } else {
+            answer++;
+        }
+    }
+    
+    public void ChangeQueenRange(int n, int row, int col, int val){
+
+        //세로 처리
+        for(int i = 0; i < n; i++){
+            queenRange[i, col] += val;
+        }
+        
+        //우 대각선 처리
+        for(int i = 1; row + i < n && col + i < n; i++){
+            queenRange[row+i, col+i] += val;
+        }
+        
+        //좌 대각선 처리
+        for(int i = 1; row + i < n && col - i >= 0; i++){
+            queenRange[row+i, col-i] += val;
+        }
+    }
+}
