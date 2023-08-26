@@ -1,0 +1,52 @@
+using System;
+using System.Collections.Generic;
+public class Solution {
+    public int solution(int n, int[,] wires) {
+
+        //임의의 정점의 개수보다 큰 수
+        int answer = 101; 
+
+        //탐색한 와이어(연결선)
+        bool[] wireVisited = new bool[wires.GetLength(0)];
+        
+        //탐색한 정점 번호 리스트
+        List<int> nodeList = new List<int>();
+        
+        //다른 종류의 와이어를 하나 비활성화 하면서 모든 경우를 탐색
+        for(int i = 0; i < wires.GetLength(0); i++){
+
+            //리스트 초기화, 항상 1번 노드로 시작
+            nodeList.Clear();
+            nodeList.Add(1);
+            
+            //와이어를 모두 탐색 가능한 상태로 만들고 i번째 와이어를 비활성화
+            wireVisited = new bool[wires.GetLength(0)];
+            wireVisited[i] = true;
+            
+
+            for(int j = 0; j < nodeList.Count; j++){
+                for(int k = 0; k < wires.GetLength(0); k++){
+
+                    //탐색할 수 있는 와이어에 한정하여 탐색된 정점과 연결된 정점을 추가
+                    if(!wireVisited[k]){
+                        if(nodeList[j] == wires[k, 0]){
+                            nodeList.Add(wires[k, 1]);
+                            wireVisited[k] = true;
+                        } else if(nodeList[j] == wires[k, 1]){
+                            nodeList.Add(wires[k, 0]);
+                            wireVisited[k] = true;
+                        }
+                        
+                    }
+                }
+            }
+            
+            //두 전력망 정점 개수 차가 최소인 경우를 반환
+            if(Math.Abs(n - 2*nodeList.Count) < answer){
+                answer = Math.Abs(n - 2*nodeList.Count);
+            }
+        }
+        
+        return answer;
+    }
+}
