@@ -1,0 +1,58 @@
+using System;
+using System.Collections.Generic;
+public class Solution {
+
+    //삼각형 2차원 배열
+    int[,] matrix;
+   
+    //2차원 배열에 저장할 값
+    int cur = 1;
+
+    public List<int> solution(int n) {
+        List<int> answer = new List<int>();
+        matrix = new int[n,n];
+
+        //먼저 삼각형 2차원 배열을 구한 뒤
+        GetList(n, 0);
+        
+        //첫 줄부터 마지막 줄까지 순서대로 리스트에 저장한다
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < i+1; j++){
+                answer.Add(matrix[i, j]);
+            }
+        }
+        return answer;
+    }
+    
+    void GetList(int n, int step){
+        if(n > 0){
+            //방향
+            switch(step % 3){
+
+                //위에서 좌측 아래 방향
+                case 0:
+                    for(int i = 0; i < n; i++){
+                        matrix[i+step/3*2, step/3] = cur++;
+                    }
+                    break;
+
+                //좌측에서 우측 방향
+                case 1:
+                    for(int i = 0; i < n; i++){
+                        matrix[matrix.GetLength(0) - 1 - step/3, i + 1 + step/3] = cur++;
+                    }
+                    break;
+
+                //아래에서 좌측 위 방향
+                case 2:
+                    for(int i = 0; i < n; i++){
+                        matrix[matrix.GetLength(0) - 2 - i - step/3, matrix.GetLength(0) - 2 - i - step/3*2] = cur++;
+                    }
+                    break;
+            }
+
+            //일자로 증가되는 수의 저장이 끝나면 개수를 줄이고 방향 변경
+            GetList(n-1, step+1);
+        }
+    }
+}
