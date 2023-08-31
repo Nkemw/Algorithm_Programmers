@@ -1,0 +1,75 @@
+using System;
+using System.Collections.Generic;
+
+public class Solution {
+    List<int> answer = new List<int>();
+    
+    //이차원 방문 정점 체크
+    bool[,] visited;
+
+    //숫자 집합의 총 일수
+    int days = 0;
+    
+    public List<int> solution(string[] maps) {
+    
+        visited = new bool[maps.Length, maps[0].Length];
+        
+        Recursion(maps, 0, 0, false);
+            
+        //모든 정점 탐색 후 숫자가 없는 경우는 -1 출력
+        if(answer.Count == 0){
+            answer.Add(-1);
+        }
+
+        //오름차순 정렬
+        answer.Sort();
+
+        return answer;
+    }
+    
+    void Recursion(string[] maps, int row, int col, bool isLinked){
+
+        //숫자를 발견하지 못하는 경우
+        if(!isLinked){
+
+            //이차원 배열의 모든 문자를 시작점으로 탐색
+            for(int i = 0; i < maps.Length; i++){
+                for(int j = 0; j < maps[0].Length; j++){
+
+                    //탐색되지 않은 정점이라면 탐색했음을 표시
+                    if(!visited[i, j]){
+                        visited[i, j] = true;
+                        
+                        //숫자를 발견했다면 숫자 정점과 이어지는 모든 정점을 연결하여 집합을 형성
+                        //탐색 후 합한 값을 리스트에 추가
+                        if(maps[i][j] != 'X'){
+                            days = int.Parse(maps[i][j].ToString());
+
+                            //상하좌우 탐색
+                            Recursion(maps, i+1, j, true);
+                            Recursion(maps, i-1, j, true);
+                            Recursion(maps, i, j+1, true);
+                            Recursion(maps, i, j-1, true);
+                            answer.Add(days);
+                        }
+                        
+                    }
+                }
+            }
+        } else {
+            
+            //현재 정점이 숫자라면 이전 정점처럼 상하좌우 탐색
+            //방문 여부도 체크한다
+            if(row < maps.Length && row >= 0 && col < maps[0].Length && col >= 0){
+                if(!visited[row, col] && maps[row][col] != 'X'){
+                    visited[row, col] = true;
+                    days += int.Parse(maps[row][col].ToString());
+                    Recursion(maps, row+1, col, true);
+                    Recursion(maps, row-1, col, true);
+                    Recursion(maps, row, col+1, true);
+                    Recursion(maps, row, col-1, true);
+                }
+            }
+        }
+    }
+}
