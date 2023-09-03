@@ -1,0 +1,50 @@
+using System;
+
+class Solution
+{
+    public int solution(int N, int[,] road, int K)
+    {
+        int answer = 0;
+        
+        //각 정점 간 거리를 표시하는 인접 행렬
+        int[,] dist = new int[N, N];
+        
+        //인접 행렬 초기화, 자기 자신은 거리 0, 그 외 모두 거리를 최대치로 설정
+        for(int i = 0; i < N; i++){
+            for(int j = 0; j < N; j++){
+                if (i == j){
+                    dist[i, j] = 0;   
+                } else {
+                    dist[i, j] = Int32.MaxValue/2;
+                }
+            }
+        }
+        
+        //입력된 간선 데이터 저장
+        for(int i = 0; i < road.GetLength(0); i++){
+            if(dist[road[i, 0]-1, road[i, 1]-1] > road[i, 2]){
+                dist[road[i, 0]-1, road[i, 1]-1] = road[i, 2];
+                dist[road[i, 1]-1, road[i, 0]-1] = road[i, 2];
+            }
+        }
+        
+        //﻿Floyd-Warshall 알고리즘, 모든 정점 간 최소 거리 저장
+        for(int k = 0; k < N; k++){
+            for(int i = 0; i < N; i++){
+                for(int j = 0; j < N; j++){
+                    if(dist[i, j] > dist[i, k] + dist[k, j]){
+                        dist[i, j] = dist[i, k] + dist[k, j];
+                    }
+                }
+            }
+        }
+        
+        //1번 정점에서 i번 정점 사이 거리가 K 이하인 경우 집계
+        for(int i = 0; i < N; i++){
+            if(dist[0, i] <= K){
+                answer++;
+            }
+        }
+        return answer;
+    }
+}
