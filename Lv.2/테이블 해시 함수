@@ -1,0 +1,35 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public class Solution {
+    public int solution(int[,] data, int col, int row_begin, int row_end) {
+        int answer = 0;
+        
+        //특정 열 값을 기준으로 오름차순 정렬한 뒤 첫 번째 열 값을 기준으로 내림차순 정렬
+        var sortedRows = from row in Enumerable.Range(0, data.GetLength(0))
+                         orderby data[row, col-1], data[row, 0] descending
+                         select row;
+        
+        //특정 행의 모든 원소들의 총합
+        int s_temp = 0;        
+
+        //행 번호
+        int index = 0;
+
+        foreach (var row in sortedRows)
+        {
+            //입력 시작 행부터 시작하여 입력 마지막 행까지만 총합을 구하여 XOR 연산 대입
+            if(index >= row_begin-1 && index <= row_end-1){
+                s_temp = 0;
+                for(int c = 0; c < data.GetLength(1); c++){
+                    s_temp += data[row, c] % (index+1);
+                }
+                
+                answer = answer ^ s_temp;
+            }
+            index++;
+        }
+        return answer;
+    }
+}
