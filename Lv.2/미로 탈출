@@ -1,0 +1,101 @@
+using System;
+using System.Collections.Generic;
+
+class Solution {
+    
+    //현 위치에서 움직일 수 있는 방법
+    int[,] move = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
+    int answer;
+
+    //방문 체크
+    bool[,] visited;
+
+    public int solution(string[] maps) {
+        answer = 0;
+        
+        int row = 0;
+        int col = 0;
+        
+        //시작 지점 탐색
+        for(int i = 0; i < maps.Length; i++){
+            for(int j = 0; j < maps[0].Length; j++){
+                if(maps[i][j] == 'S'){
+                    row = i;
+                    col = j;
+                    
+                }
+            }
+        }
+        
+        //방문 체크 배열 초기화
+        visited = new bool[maps.Length, maps[0].Length];
+        visited[row, col] = true;
+        
+        //먼저 중간 지점인 레버까지의 최소 거리를 구한다
+        Bfs(maps, row, col, 'L', true);
+     
+        return answer;
+    }
+    
+    void Bfs(string[] maps, int row, int col, char target, bool searchContinue){
+        
+        Queue<int[,]> queue = new Queue<int[,]>();
+        
+        //초기값으로 현재 위치(row, col) 저장
+        queue.Enqueue(new int[,] {{row, col, 0}});
+    
+        //탐색할 정점이 없을 때까지 반복
+        while(queue.Count != 0){
+
+            //현 위치
+            int[,] curPos = queue.Dequeue();
+            int curX = curPos[0, 1];
+            int curY = curPos[0, 0];
+            
+            //현재 좌표가 찾고자 하는 지점인 경우
+            if(maps[curY][curX] == target){
+
+                //최소 거리를 결과값에 추가
+                answer += curPos[0, 2];
+
+                //첫 번째 BFS인 경우 목표 지점인 탈출구까지의 최소 거리를 탐색
+                if(searchContinue){
+                 
+                    //방문 배열 초기화, 중간 지점을 시작 지점으로 설정한 뒤 탐색
+                    visited = new bool[maps.Length, maps[0].Length];
+                    visited[curY, curX] = true;
+                    Bfs(maps, curY, curX, 'E', false);
+                }
+                return;
+            }
+
+            //상하좌우 4번 반복
+            for(int i = 0; i < 4; i++){
+               
+                //맵의 범위를 벗어나면 탐색 제외
+                if(curY + move[i, 0] >= maps.Length || curY + move[i, 0] < 0
+                  || curX + move[i, 1] >= maps[0].Length || curX + move[i, 1] < 0){
+                    continue;
+                }
+                
+                //방문한 지점이라면 탐색 제외
+                if(visited[curY + move[i, 0],curX + move[i, 1]]){
+                    continue;
+                }
+                
+                //탐색 대상이 벽이라면 탐색 제외
+                if(maps[curY + move[i, 0]][curX + move[i, 1]] == 'X'){
+                    continue;
+                }
+                
+                //그 외엔 탐색 가능하므로 다음 탐색 지점을 큐에 입력하고 방문 탐색을 표시
+                queue.Enqueue(new int[,] {{curY + move[i, 0], curX + move[i, 1], curPos[0, 2] + 1}});
+                visited[curY + move[i, 0], curX + move[i, 1]] = true;
+            }
+        }
+
+        //모든 지점을 탐색하고 목표 지점을 찾지 못한 경우 -1 반환
+        answer = -1;
+        return;
+    }
+}
