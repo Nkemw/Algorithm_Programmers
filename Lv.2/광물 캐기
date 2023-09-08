@@ -1,0 +1,76 @@
+using System;
+using System.Collections.Generic;
+public class Solution {
+    
+    //info[i, j]에서 i는 곡괭이 종류, j는 광물 종류
+    int[,] info = {{1, 1, 1}, {5, 1, 1}, {25, 5, 1}};
+
+    //문자열 광물 종류를 정수로 변환에 사용
+    Dictionary<string, int> mineralDict = new Dictionary<string, int>();
+
+    //최솟값을 구하기 위해 최댓값 저장
+    int answer = Int32.MaxValue;
+    
+    public int solution(int[] picks, string[] minerals) {
+        
+        //mineralDict 키-값 설정
+        mineralDict.Add("diamond", 0);
+        mineralDict.Add("iron", 1);
+        mineralDict.Add("stone", 2);
+        
+        //depth는 현재 minerals 배열의 포인터 역할, totalTry는 현재까지 집계된 총 피로도
+        Dfs(picks, minerals, 0, 0);
+        
+        return answer;
+    }
+    
+    void Dfs(int[] picks, string[] minerals, int depth, int totalTry){
+
+        //모두 탐색한 경우 최솟값 검사 후 저장
+        if(depth == minerals.Length){
+            if(answer > totalTry){
+                answer = totalTry;
+            }
+        } else {
+         
+            //모든 곡괭이를 사용한 경우 모두 탐색했다고 가정하고 재귀함수 호출
+            if(picks[0] == 0 && picks[1] == 0 && picks[2] == 0){
+                Dfs(picks, minerals, minerals.Length, totalTry);
+            }
+
+            //곡괭이 종류 개수만큼 반복문 실행
+            for(int i = 0; i < 3; i++){                    
+
+                //해당 종류 곡괭이가 없는 경우는 무시
+                if(picks[i] == 0){
+                    continue;
+                }
+                
+                //현재 곡괭이를 사용하면 나오는 피로도를 저장
+                int temp = 0;
+
+                //5개까지 캐지 못하는 경우와 캘 수 있는 경우
+                //캘 수 있는만큼 피로도를 계산
+                if(depth + 4 >= minerals.Length){
+                    for(int j = 0; j < minerals.Length - depth; j++){
+                        temp += info[i, mineralDict[minerals[depth+j]]];
+                    }
+                    picks[i]--;
+                    totalTry += temp;
+                    Dfs(picks, minerals, minerals.Length, totalTry);
+                    totalTry -= temp;
+                    picks[i]++;
+                } else {
+                    for(int j = 0; j < 5; j++){
+                        temp += info[i, mineralDict[minerals[depth+j]]];
+                    }
+                    picks[i]--;
+                    totalTry += temp;
+                    Dfs(picks, minerals, depth + 5, totalTry);
+                    totalTry -= temp;
+                    picks[i]++;
+                }
+            }
+        }
+    }
+}
