@@ -1,0 +1,115 @@
+using System;
+using System.Collections.Generic;
+public class Solution {
+    public int solution(int n, int k, int[] enemy) {
+        int answer = 0;
+        
+        //최소 힙 선언
+        MinHeap mh = new MinHeap();
+        
+        //각 라운드의 적 수를 힙에 저장
+        for (int i = 0; i < enemy.Length; i++) {
+            mh.Add(enemy[i]);
+
+            //힙의 크기가 k개를 넘어간다면 최솟값을 제거하고 그만큼 n값에 빼 준다
+            if (mh.Count() > k) {
+                n -= mh.Pop();
+            }
+
+            //n이 음수라면 현재까지 탐색된 라운드 수를 출력
+            if (n < 0) {
+                answer = i;
+                return answer;
+            }
+        }
+
+        //모든 라운드를 탐색한 경우
+        answer = enemy.Length;
+        return answer;
+    }
+}
+
+public class MinHeap 
+{
+    private List<int> list = new List<int>();
+
+    //삽입 연산
+    public void Add(int value)
+    {
+
+        //1. 리스트에 값 추가
+        list.Add(value);
+
+        //root 노드를 제외한 힙 크기 저장
+        int i = list.Count - 1;
+
+        //현재 위치에서 부모 노드와 값을 비교하여 부모 노드보다 값이 작다면 부모 노드와 위치 변경
+        while (i > 0)
+        {
+            int parent = (i - 1) / 2;
+            if (list[parent] > list[i])
+            {
+                Swap(parent, i);
+                i = parent;
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+
+    //제거 연산
+    public int Pop()
+    {
+        //가장 최솟값인 root 값을 저장하여 이를 반환
+        int root = list[0];
+            
+        //루트 노드를 마지막 노드로 변경
+        list[0] = list[list.Count - 1];
+
+        //마지막 노드 제거
+        list.RemoveAt(list.Count - 1);
+        
+        int i = 0;
+        int last = list.Count - 1;
+
+        //루트 노드에서 두 자식 노드와 비교하여 위치 변경
+        while (i < last){
+
+            //현재 위치의 좌측 자식 노드 인덱스
+            int child = i*2 + 1;
+
+            //우측 노드가 존재하며 좌측 자식 노드가 우측 노드보다 큰 경우
+            //우측 노드를 부모 노드와 비교하기 위해 인덱스 1 증가
+            if (child < last && list[child] > list[child + 1]){
+                child = child + 1;
+            }
+            
+            //더 이상 비교할 노드가 없거나 부모 노드가 자식 노드들보다 작은 경우 반복문 종료
+            if (child > last || list[i] <= list[child]){
+               break;
+            }
+                
+            //그 외엔 변경해야 하므로 자식 노드와 부모 노드의 위치를 변경
+            //비교해야 하는 노드를 자식 노드로 변경
+            Swap(i, child);
+            i = child;                                    
+        }
+
+        return root;
+    }
+
+    //힙 자료 위치 변경
+    private void Swap(int i, int j)
+    {
+        int temp = list[i];
+        list[i] = list[j];
+        list[j] = temp;
+    }
+     
+    //힙 크기 반환 메소드
+    public int Count(){
+        return list.Count;
+    }
+}
