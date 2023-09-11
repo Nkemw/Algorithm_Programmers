@@ -1,0 +1,101 @@
+using System;
+
+public class Solution {
+    public int solution(string[] board) {
+        int answer = 1;
+        
+        //O, X 개수
+        int xCount = 0;
+        int oCount = 0;
+
+        //반복문을 이용하여 O, X 개수 집계
+        for(int i = 0; i < board.Length; i++){
+            for(int j = 0; j < board[0].Length; j++){
+                if(board[i][j] == 'O'){
+                    oCount++;
+                } else if(board[i][j] == 'X'){
+                    xCount++;
+                }
+            }
+        }
+        
+        
+        //O, X가 한 줄로 되어있는지
+        bool xClear = false;
+        bool oClear = false;
+        
+        //반복문을 이용하여 O, X 한 줄 검사
+        for(int i = 0; i < board.Length; i++){
+            for(int j = 0; j < board[0].Length; j++){
+
+                //대각선 검사
+                if((board[0][0] == 'O' && board[1][1] == 'O' && board[2][2] == 'O') || 
+                  (board[0][2] == 'O' && board[1][1] == 'O' && board[2][0] == 'O')){
+                    oClear = true;
+                } else if((board[0][0] == 'X' && board[1][1] == 'X' && board[2][2] == 'X') || 
+                  (board[0][2] == 'X' && board[1][1] == 'X' && board[2][0] == 'X')){
+                    xClear = true;
+                }
+                
+                //가로, 세로 검사
+                if(board[i][j] == 'O'){
+                    if(board[i][0] == 'O' && board[i][1] == 'O' && board[i][2] == 'O'){
+                        oClear = true;
+                    } else if(board[0][j] == 'O' && board[1][j] == 'O' && board[2][j] == 'O'){
+                        oClear = true;
+                    }
+                } else if(board[i][j] == 'X'){
+                    if(board[i][0] == 'X' && board[i][1] == 'X' && board[i][2] == 'X'){
+                        xClear = true;
+                    } else if(board[0][j] == 'X' && board[1][j] == 'X' && board[2][j] == 'X'){
+                        xClear = true;
+                    }
+                }
+            }
+        }
+
+
+        //O 개수보다 X 개수가 더 많은 경우
+        // XOX
+        // ...
+        // ...
+        if(xCount > oCount){
+            return 0;
+        }
+
+        //O 개수가 X 개수보다 2개 이상 더 많은 경우
+        // XOO
+        // ..O
+        // ...
+        if(xCount + 1 < oCount){
+            return 0;
+        }
+
+        //O, X 모두 한 줄로 이루어진 경우
+        // XXX
+        // OOO
+        // ...
+        if(xClear && oClear){
+            return 0;
+        }
+
+        // O로 한 줄이 완성되었으나 O와 X의 개수가 같은 경우
+        // OOO
+        // XX.
+        // .X.
+        if(oClear && xCount == oCount){
+            return 0;
+        }
+        
+        // X로 한 줄이 완성되었으나 O의 개수가 X의 개수보다 많은 경우
+        // XXX
+        // OO.
+        // .OO
+        if(xClear && xCount < oCount){
+            return 0;
+        }
+        
+        
+        return answer;
+    }
+}
