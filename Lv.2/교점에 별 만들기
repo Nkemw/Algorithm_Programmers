@@ -1,0 +1,89 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+public class Solution {
+    public string[] solution(int[,] line) {
+        string[] answer;
+        
+        //교점 좌표를 저장하는 리스트
+        List<Tuple<long, long>> crossPointList = new List<Tuple<long, long>>();
+        
+        //모든 직선의 정수 교점 좌표를 리스트에 저장
+        for(int i = 0; i < line.GetLength(0); i++){
+            for(int j = i+1; j < line.GetLength(0); j++){
+                long A = line[i, 0];
+                long B = line[i, 1];
+                long C = line[j, 0];
+                long D = line[j, 1];
+                long E = line[i, 2];
+                long F = line[j, 2];
+                
+                //평행하거나 일치하는 경우를 제외
+                if(A*D - B*C != 0){
+
+                    //정수 교점 좌표가 아닌 경우를 제외
+                    if((B*F - E*D)%(A*D - B*C) == 0 && (E*C - A*F)%(A*D - B*C) == 0){
+                        long x = (B*F - E*D)/(A*D - B*C);
+                        long y = (E*C - A*F)/(A*D - B*C);
+                        
+                        if(!crossPointList.Contains(new Tuple<long, long>(x, y))){
+                            crossPointList.Add(new Tuple<long, long>(x, y));
+                        }
+                    }
+                }
+            }
+        }
+        
+        long minX = Int64.MaxValue;
+        long minY = Int64.MaxValue;
+        long maxX = Int64.MinValue;
+        long maxY = Int64.MinValue;
+        
+        //리스트에 저장된 교점 좌표들의 x,y 최소, 최댓값을 구하기
+        for(int i = 0; i < crossPointList.Count; i++){
+            if(minX > crossPointList[i].Item1){
+                minX = crossPointList[i].Item1;   
+            }
+            
+            if(minY > crossPointList[i].Item2){
+                minY = crossPointList[i].Item2;
+            }
+            
+            if(maxX < crossPointList[i].Item1){
+                maxX = crossPointList[i].Item1;
+            }
+            
+            if(maxY < crossPointList[i].Item2){
+                maxY = crossPointList[i].Item2;
+            }
+        }
+        
+        //문자열 배열의 행 크기 할당
+        answer = new string[maxY - minY + 1];
+        
+        //교점 좌표에 별, 그렇지 않으면 점을 찍기 위한 bool 타입 2차원 배열
+        bool[,] isStar = new bool[maxY - minY + 1, maxX - minX + 1];
+        
+        //교점 좌표를 bool 타입 2차원 배열에 표시
+        for(int i = 0; i < crossPointList.Count; i++){
+            isStar[maxY - crossPointList[i].Item2, crossPointList[i].Item1 - minX] = true;
+        }
+        
+        //bool 타입 2차원 배열의 상태를 확인하여 별 또는 점을 찍는다
+        for(int i = 0; i < isStar.GetLength(0); i++){
+            StringBuilder sb = new StringBuilder();
+            for(int j = 0; j < isStar.GetLength(1); j++){
+                if(isStar[i, j]){
+                    sb.Append('*');
+                } else {
+                    sb.Append('.');
+                }
+            }
+            answer[i] = sb.ToString();
+        }
+        
+        
+        
+        return answer;
+    }
+}
