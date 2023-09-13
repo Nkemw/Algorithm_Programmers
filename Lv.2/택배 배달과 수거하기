@@ -1,0 +1,87 @@
+using System;
+using System.Collections.Generic;
+
+public class Solution {
+    public long solution(int cap, int n, int[] deliveries, int[] pickups) {
+        long answer = 0;
+        
+        //배달 정보와 수거 정보
+        //가장 마지막 정보부터 처리하므로 자료구조 Stack을 사용하였다.
+        //<거리, 배달 또는 수거 개수>
+        Stack<Tuple<int, int>> deliveryStack = new Stack<Tuple<int, int>>();
+        Stack<Tuple<int, int>> pickupStack = new Stack<Tuple<int, int>>();
+        
+        //개수가 0인 정보는 쓰지 않으므로 1 이상인 경우만 스택에 추가
+        for(int i = 0; i < n; i++){
+            if(deliveries[i] != 0){
+                deliveryStack.Push(new Tuple<int, int>(i+1, deliveries[i]));
+            }
+            
+            if(pickups[i] != 0){
+                pickupStack.Push(new Tuple<int, int>(i+1, pickups[i]));
+            }
+        }
+        
+        //배달 수량과 수거 수량이 모두 0일 때까지 반복
+        while(deliveryStack.Count != 0 || pickupStack.Count != 0){
+
+            //가장 먼 집까지의 거리
+            int maxDistance;
+
+            //배달 정보와 수거 정보를 비교하여 가장 먼 거리에 위치한 집의 거리를 저장
+            //배달 또는 수거 정보가 존재하지 않는 경우 예외 처리
+            if(deliveryStack.Count != 0 && pickupStack.Count != 0){
+                if(deliveryStack.Peek().Item1 > pickupStack.Peek().Item1){
+                    maxDistance = deliveryStack.Peek().Item1;
+                } else {
+                    maxDistance = pickupStack.Peek().Item1;
+                }
+            } else {
+                if(deliveryStack.Count == 0){
+                    maxDistance = pickupStack.Peek().Item1;
+                } else {
+                    maxDistance = deliveryStack.Peek().Item1;
+                }
+            }
+            
+            //트럭 용량만큼 배달 수량을 빼 준다
+            int capTemp = cap;
+
+            //배달 정보가 없다면 실행하지 않음
+            while(deliveryStack.Count != 0){
+
+                //가장 먼 집의 배달 수량이 트럭 용량보다 작거나 같은 경우
+                //트럭 용량을 배달 수량만큼 빼 준다
+                
+                //배달 수량이 트럭 용량보다 큰 경우
+                //가장 먼 집의 배달 수량을 남아있는 트럭 용량만큼 빼 주어 갱신한다
+                if(deliveryStack.Peek().Item2 <= capTemp){
+                    capTemp -= deliveryStack.Pop().Item2;
+                } else {
+                    Tuple<int, int> tupleTemp = deliveryStack.Pop();
+                    deliveryStack.Push(new Tuple<int, int>(tupleTemp.Item1, tupleTemp.Item2 - capTemp));
+                    capTemp = 0;
+                    break;
+                }
+            }
+            
+            //트럭 용량만큼 수거 수량을 빼 준다
+            //반복문의 내용은 배달 정보와 동일하다
+            capTemp = cap;
+            while(pickupStack.Count != 0){
+                if(pickupStack.Peek().Item2 <= capTemp){
+                    capTemp -= pickupStack.Pop().Item2;
+                } else {
+                    Tuple<int, int> tupleTemp = pickupStack.Pop();
+                    pickupStack.Push(new Tuple<int, int>(tupleTemp.Item1, tupleTemp.Item2 - capTemp));
+                    capTemp = 0;
+                    break;
+                }
+            }
+
+            //트럭의 왕복한 거리를 최소 거리에 추가
+            answer += maxDistance*2;
+        }
+        return answer;
+    }
+}
