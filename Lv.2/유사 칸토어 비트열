@@ -1,0 +1,44 @@
+using System;
+
+public class Solution {
+    public int solution(int n, long l, long r) {
+        int answer = 0;
+
+        //비트 시작 위치는 0부터이므로 입력 인덱스에 1을 뺀다
+        l = l-1;
+        
+        //폐구간 [l, r]에 대한 모든 1의 개수를 구하기
+        while(l < r){
+            if(OneCheck(l)){
+                answer++;
+            }
+            l++;
+        }
+
+        return answer;
+    }
+    
+    //비트가 0 또는 1인지 구하는 함수
+    bool OneCheck(long l){
+
+        //첫 번째 유사 칸토열을 검사하는 경우
+        if(l / 5 == 0){
+
+            //중간에 위치한 비트면 0, 그렇지 않으면 1 반환
+            if(l % 5 != 2){
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            
+            //나머지 연산 시 2가 나왔다면 0으로 이루어진 비트열이므로 0 반환
+            if(l % 5 == 2){
+                return false;
+            }
+ 
+            //그 외엔 n-1번째 유사 칸토어 비트열을 검사
+            return OneCheck(l / 5);
+        }
+    }
+}
