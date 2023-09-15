@@ -1,0 +1,58 @@
+using System;
+
+public class Solution {
+    public int[] solution(int m, int n, int startX, int startY, int[,] balls) {
+        int[] answer = new int[balls.GetLength(0)];
+        
+        for(int i = 0; i < balls.GetLength(0); i++){
+            int minDistance = Int32.MaxValue;
+            int distTemp = 0;
+            
+            //대칭시켰을 때의 x, y 좌표
+            int destX;
+            int destY;
+            
+            //시작 지점과 목표 지점의 X축 좌표가 같지 않거나 같아도 시작 지점의 Y축이 큰 경우
+            //위쪽 X축 벽을 맞출 수 있다.
+            if(startX != balls[i, 0] || startY > balls[i, 1]){
+                destX = balls[i, 0];
+                destY = 2*n - balls[i, 1];
+                
+                distTemp = (int) Math.Pow(destX - startX, 2) + (int) Math.Pow(destY - startY, 2);
+                minDistance = Math.Min(minDistance, distTemp);
+            }
+            
+            //시작 지점과 목표 지점의 X축 좌표가 같지 않거나 같아도 시작 지점의 Y축이 작은 경우
+            //아래쪽 X축 벽을 맞출 수 있다.
+            if(startX != balls[i, 0] || startY < balls[i, 1]){
+                destX = balls[i, 0];
+                destY = -balls[i, 1];
+                
+                distTemp = (int) Math.Pow(destX - startX, 2) + (int) Math.Pow(destY - startY, 2);
+                minDistance = Math.Min(minDistance, distTemp);
+            }
+
+            //시작 지점과 목표 지점의 Y축 좌표가 같지 않거나 같아도 시작 지점의 X축이 큰 경우
+            //오른쪽 Y축 벽을 맞출 수 있다.
+            if(startY != balls[i, 1] || startX > balls[i, 0]){
+                destX = 2*m - balls[i, 0];
+                destY = balls[i, 1];
+                
+                distTemp = (int) Math.Pow(destX - startX, 2) + (int) Math.Pow(destY - startY, 2);
+                minDistance = Math.Min(minDistance, distTemp);
+            }
+
+            //시작 지점과 목표 지점의 Y축 좌표가 같지 않거나 같아도 시작 지점의 X축이 작은 경우
+            //왼쪽 Y축 벽을 맞출 수 있다.
+            if(startY != balls[i, 1] || startX < balls[i, 0]){
+                destX = -balls[i, 0];
+                destY = balls[i, 1];
+                
+                distTemp = (int) Math.Pow(destX - startX, 2) + (int) Math.Pow(destY - startY, 2);
+                minDistance = Math.Min(minDistance, distTemp);
+            }
+            answer[i] = minDistance;
+        }
+        return answer;
+    }
+}
