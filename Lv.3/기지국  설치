@@ -1,0 +1,46 @@
+using System;
+
+class Solution
+{
+    public int solution(int n, int[] stations, int w){
+        int answer = 0;
+
+        //시작 지점과 첫 번째 기지국 사이의 거리
+        //거리는 0일 수 있으므로 너비를 제외한 거리가 1보다 큰 경우
+        if(stations[0] - w > 1){
+
+            //나머지 연산의 결과에 따라 설치할 수 있는 기지국의 개수를 더한다
+            if((stations[0] - w) % (w*2 + 1) == 0){
+                answer += (stations[0] - w) / (w*2 + 1);
+            } else {         
+                answer += (stations[0] - w) / (w*2 + 1) + 1;   
+            }
+        }
+
+        //미리 설치된 각 기지국 사이의 거리
+        for(int i = 0; i < stations.Length-1; i++){
+
+            //기지국 사이의 거리를 구하여 설치할 수 있는 기지국의 개수를 더한다
+            int distance = stations[i+1] - stations[i] - w*2 - 1;
+
+            if(distance > 0){
+                if(distance % (w*2 + 1) == 0){
+                    answer += distance / (w*2 + 1);
+                } else {
+                    answer += distance / (w*2 + 1) + 1;
+                }
+            }
+        }
+
+        //마지막 기지국과 도착 지점 사이의 거리
+        if(stations[stations.Length-1] + w < n){
+            if((n - stations[stations.Length-1] - w) % (w*2 + 1) == 0){
+                answer += (n - stations[stations.Length-1] - w) / (w*2 + 1);
+            } else {         
+                answer += (n - stations[stations.Length-1] - w) / (w*2 + 1) + 1;   
+            }
+        }
+        
+        return answer;
+    }
+}
