@@ -1,0 +1,80 @@
+using System;
+using System.Collections.Generic;
+
+public class Solution {
+    int answer = 0;
+    
+    //<현재 노드, 탐색가능한 노드 리스트>
+    Dictionary<int, List<int>> map = new Dictionary<int, List<int>>();
+
+    public int solution(int n, int[,] edge) {
+        
+        //간선을 탐색하여 각 노드로부터 탐색할 수 있는 노드의 정보를 저장한다
+        for(int i = 0; i < edge.GetLength(0); i++){
+            if(!map.ContainsKey(edge[i, 0])){
+                map.Add(edge[i, 0], new List<int>());
+            }
+            if(!map.ContainsKey(edge[i, 1])){
+                map.Add(edge[i, 1], new List<int>());
+            }
+            map[edge[i, 0]].Add(edge[i, 1]);
+            map[edge[i, 1]].Add(edge[i, 0]);
+        }
+        
+        //시작 노드와 간선을 매개변수로 입력
+        Bfs(1, edge);
+        return answer;
+    }
+    
+    
+    void Bfs(int startNode, int[,] edge){
+        //<시작 노드, 거리>
+        Queue<Tuple<int, int>> queue = new Queue<Tuple<int, int>>();
+
+        //탐색한 노드를 저장
+        HashSet<int> visitedNode = new HashSet<int>();
+
+        //개수를 세기 위해 Dictionary 사용, <거리, 개수>
+        Dictionary<int, int> infoDict = new Dictionary<int, int>();
+        
+        //탐색 깊이(거리)
+        int depth = 0;
+        
+        //큐에 1번 노드를 넣고 HashSet 갱신
+        queue.Enqueue(new Tuple<int, int>(startNode, 0));
+        visitedNode.Add(startNode);
+        
+        while(queue.Count > 0){
+
+            //현재 큐에 저장된 정보
+            Tuple<int, int> curInfo = queue.Dequeue();
+            
+            //현재 노드에서 이동할 수 있는 노드들의 개수만큼 반복
+            for(int i = 0; i < map[curInfo.Item1].Count; i++){
+
+                //다음 노드가 탐색하지 않은 노드이면 탐색 가능
+                if(!visitedNode.Contains(map[curInfo.Item1][i])){
+
+                    //큐, Dictionary, HashSet 갱신
+                    queue.Enqueue(new Tuple<int, int>(map[curInfo.Item1][i], curInfo.Item2+1));
+                    if(infoDict.ContainsKey(curInfo.Item2+1)){
+                        infoDict[curInfo.Item2+1]++;
+                    } else {
+                        infoDict.Add(curInfo.Item2+1, 1);
+                    }
+                    visitedNode.Add(map[curInfo.Item1][i]);
+                }
+            }
+            
+            //최대 탐색 거리 갱신
+            if(depth < curInfo.Item2){
+                depth = curInfo.Item2;
+            }
+        }
+
+        //가장 멀리 떨어진 노드의 개수를 반환
+        if(answer < infoDict[depth]){
+            answer = infoDict[depth];
+        }
+    }
+}
