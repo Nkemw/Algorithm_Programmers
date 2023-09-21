@@ -1,0 +1,69 @@
+using System;
+
+public class Solution {
+    public int solution(int n, int[,] costs) {
+        int answer = 0;
+        
+        int[,] graph = new int[n, n];
+        
+        //그래프 초기값 설정 자기 자신으로 가는 비용은 0, 특정 노드로 갈 수 없다면 큰 수를 저장
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < n; j++){
+                if(i == j){
+                    graph[i, j] = 0;
+                } else {
+                    graph[i, j] = Int32.MaxValue;
+                }
+            }
+        }
+        
+        //양방향 그래프이므로 간선이 주어진다면 대칭으로 값을 변경
+        for(int i = 0; i < costs.GetLength(0); i++){
+            graph[costs[i, 0], costs[i, 1]] = costs[i, 2];
+            graph[costs[i, 1], costs[i, 0]] = costs[i, 2];
+        }
+        
+        //방문한 노드
+        bool[] visited = new bool[n];
+
+        //현재까지 탐색한 노드들 중 각 노드에 대한 최단 경로
+        int[] minCost = new int[n];
+        
+        //출발 노드를 0번 노드로 초기값 설정 (어떤 노드를 출발 노드로 해도 상관 없음)
+        for(int i = 0; i < n; i++){
+            minCost[i] = graph[0, i];
+        }
+        visited[0] = true;
+        
+        
+        //모든 노드를 탐색할 때까지 반복
+        for(int i = 0; i < n-1; i++){
+
+            //탐색할 수 있는 노드들 중 가장 최단 경로인 노드 번호를 저장
+            int min = Int32.MaxValue;
+            int index = 0;
+            for(int j = 0; j < n; j++){
+                if(minCost[j] < min && !visited[j]){
+                    min = minCost[j];
+                    index = j;
+                }
+            }
+            
+            //가장 최단 경로인 노드를 탐색하여 비용 추가
+            answer += minCost[index];
+            visited[index] = true;
+            
+            //현재까지 탐색한 노드들 중 각 노드에 대한 최단 경로를 갱신
+            //중복 경로를 제외하기 위해 노드 간 한 번에 이동할 수 있는 경로만 비교
+            for(int j = 0; j < n; j++){
+                if(!visited[j]){
+                    if(graph[index, j] < minCost[j]){
+                        minCost[j] = graph[index, j];
+                    }
+                }
+            }
+            
+        }
+        return answer;
+    }
+}
