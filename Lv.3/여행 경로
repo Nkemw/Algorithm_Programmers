@@ -1,0 +1,77 @@
+using System;
+using System.Collections.Generic;
+public class Solution {
+    string[] answer;
+    
+    //<현재 항공, 이동 가능한 항공 리스트>
+    Dictionary<string, List<string>> ticketDict = new Dictionary<string, List<string>>();
+
+    //사용한 항공권
+    bool[] visited;
+
+    //처음으로 모든 항공권을 사용한 경로를 찾았는지
+    bool isDone;
+
+    //임시 항공 이동 경로
+    string[] temp;
+
+    public string[] solution(string[,] tickets) {
+        answer = new string[tickets.GetLength(0)+1];
+        visited = new bool[tickets.GetLength(0)];
+        temp = new string[tickets.GetLength(0)+1];
+
+        //입력된 항공권을 토대로 매핑
+        for(int i = 0; i < tickets.GetLength(0); i++){
+            if(!ticketDict.ContainsKey(tickets[i, 0])){
+                ticketDict.Add(tickets[i, 0], new List<string>());
+            }
+            ticketDict[tickets[i, 0]].Add(tickets[i, 1]);
+        }
+        
+        //알파벳 순서대로 각 키에 대한 값을 오름차순 정렬
+        foreach(string keys in ticketDict.Keys){
+            ticketDict[keys].Sort();
+        }
+        
+        //ICN 항공을 시작으로 탐색 시작
+        temp[0] = "ICN";
+        Dfs(tickets, 0);
+        
+        return answer;
+    }
+    
+    void Dfs(string[,] tickets, int depth){
+        
+        //모든 항공권을 사용한 경로를 찾은 경우
+        if(depth == tickets.GetLength(0)){
+
+            //출력 배열에 임시 경로 배열 값을 저장
+            for(int i = 0; i < temp.Length; i++){
+                answer[i] = temp[i];
+            }
+
+            //모든 재귀 호출 정지
+            isDone = true;
+        } else {
+            if(!isDone){
+
+                //모든 항공권을 체크
+                for(int i = 0; i < tickets.GetLength(0); i++){
+
+                    //사용하지 않은 항공권이면서 현재 항공의 이름과 항공권 출발지가 같은 경우
+                    if(!visited[i] && temp[depth].Equals(tickets[i, 0])){
+
+                        //항공권의 도착지를 저장
+                        //깊이 탐색이 가능하도록 ticketDict에서는 값 제거 및 재귀 후 추가
+                        temp[depth+1] = ticketDict[temp[depth]][0];
+                        ticketDict[temp[depth]].RemoveAt(0);
+                        visited[i] = true;
+                        Dfs(tickets, depth+1);
+                        ticketDict[temp[depth]].Add(temp[depth+1]);
+                        visited[i] = false;
+                    }
+                }
+            }
+        }
+    }
+}
