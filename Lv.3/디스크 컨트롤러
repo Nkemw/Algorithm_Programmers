@@ -1,0 +1,86 @@
+using System;
+using System.Collections.Generic;
+public class Solution {
+    public int solution(int[,] jobs) {
+        int answer = 0;
+        
+        //입력 작업 정보. <요청 시점, 소요 시간>
+        List<Tuple<int, int>> jobList = new List<Tuple<int, int>>();
+
+        //현재 시점을 기준으로 작업의 정보를 저장하는 진행 리스트 <요청 시점, 소요 시간>
+        List<Tuple<int, int>> progressList = new List<Tuple<int, int>>();
+        
+        //입력 데이터를 리스트로 변환
+        for(int i = 0; i < jobs.GetLength(0); i++){
+            jobList.Add(new Tuple<int, int>(jobs[i, 0], jobs[i, 1]));
+        }
+        
+        //요청 시점을 기준으로 오름차순 후 소요 시간을 기준으로 오름차순
+        jobList.Sort((a, b) =>
+        {
+            int result = a.Item1.CompareTo(b.Item1);
+            if (result == 0)
+            {
+                result = a.Item2.CompareTo(b.Item2);
+            }
+            return result;
+        });
+        
+        //현재 시점
+        int time = 0;
+
+        //작업 정보 리스트 포인터
+        int index = 0;
+        
+        //초기값 설정. 요청 시점이 가장 빠르며 소요 시간이 적은 작업을 진행 리스트에 추가
+        progressList.Add(new Tuple<int, int>(jobList[0].Item1, jobList[0].Item2));
+        index++;
+
+        //모든 작업을 처리할 때까지 반복
+        while(progressList.Count > 0 || index < jobList.Count){
+            
+            //현재 처리중인 작업이 종료되면 처리할 수 있는 작업을 진행 리스트에 추가
+            for(int i = index; i < jobList.Count; i++){
+                if(jobList[i].Item1 <= time){
+                    progressList.Add(new Tuple<int, int>(jobList[i].Item1, jobList[i].Item2));
+                    index++;
+                } else {
+                    break;
+                }
+            }
+            
+            //위 연산에서 추가된 작업이 없는 경우(현재 작업 후 남아있는 작업이 없다면)
+            //초기값 설정처럼 요청 시점이 빠르고 소요 시간이 적은 작업을 처리
+            if(progressList.Count == 0){
+                progressList.Add(new Tuple<int, int>(jobList[index].Item1, jobList[index].Item2));
+                time = jobList[index].Item1;
+                index++;
+            } else {
+            
+                //현재 작업 후 남아있는 작업이 있는 경우
+                //소요시간을 기준으로 진행 리스트 오름차순 정렬
+                progressList.Sort((a, b) => a.Item2.CompareTo(b.Item2));
+
+                //진행 리스트 첫 번째 데이터 추출 및 진행 리스트에서 제거
+                Tuple<int, int> minInfo;
+
+                minInfo = new Tuple<int, int>(progressList[0].Item1, progressList[0].Item2);
+                progressList.RemoveAt(0);
+
+                //현재 시점과 작업 요청 시점을 비교하여 현재 시점 값이 크거나 같은 경우와 작은 경우로 나누어 계산
+                if(time >= minInfo.Item1){
+                    int diff = time - minInfo.Item1;
+                    time = minInfo.Item1 + minInfo.Item2 + diff;
+                    answer += time - minInfo.Item1;
+                } else {
+                    time = minInfo.Item1 + minInfo.Item2;
+                    answer += time - minInfo.Item1;
+                }
+            }
+            
+        }
+        
+        //평균값 출력
+        return answer / jobs.GetLength(0);
+    }
+}
