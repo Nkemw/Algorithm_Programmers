@@ -1,0 +1,44 @@
+using System;
+using System.Text;
+
+public class Solution {
+    public int solution(string s) {
+        int answer = 0;
+        
+        //문자열 s의 모든 위치에서 반복
+        for(int i = 0; i < s.Length; i++){
+
+            //현재 s의 위치에서 가장 긴 문자열 부터 가장 작은 문자열까지 검사
+            for(int j = s.Length-i; j >= 0; j--){
+
+                //해당 문자열이 현재 구해진 팰린드롬 길이보다 작다면 구할 필요 없으므로 반복문 종료
+                if(j <= answer){
+                    break;
+                }
+
+                //해당 길이의 문자열이 팰린드롬이라면 팰린드롬 길이 갱신
+                if(IsPalindrome(s, i, i+j-1)){
+                    answer = j;
+                }
+            }
+        }
+        
+        return answer;
+    }
+    
+    
+    bool IsPalindrome(string str, int start, int end){
+        
+        //start, end 포인터를 이용하여 각 문자를 비교한다
+        //한 번이라도 다를 경우 팰린드롬이 아니므로 false 반환
+        while(start < end){
+                
+            if(str[start] != str[end]){
+                return false;
+            }
+            start++;
+            end--;
+        }
+        return true;
+    }
+}
