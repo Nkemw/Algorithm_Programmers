@@ -1,0 +1,44 @@
+using System;
+
+public class Solution {
+    public long solution(int[] sequence) {
+        long answer = 0;
+        
+        //[1, -1, 1, -1 ..]
+        //[-1, 1, -1, 1 ..]
+        //두 개의 순환 수열을 sequence배열에 적용한 배열
+        int[,] pulseSequence = new int[2, sequence.Length];
+        
+        for(int i = 0; i < sequence.Length; i++){
+            if(i % 2 == 0){
+                pulseSequence[0, i] = sequence[i];
+                pulseSequence[1, i] = -sequence[i];
+            } else {
+                pulseSequence[0, i] = -sequence[i];
+                pulseSequence[1, i] = sequence[i];
+            }
+        }
+        
+        //두 개의 펄스 수열에 대한 최대값을 저장하기 위한 배열
+        //최대 부분합이 int 범위를 벗어날 수 있으므로 long타입으로 선언
+        long[] max = new long[2];
+        
+        //각 펄스 수열에 대해 선형 탐색
+        for(int i = 0; i < pulseSequence.GetLength(1); i++){
+         
+            //현재 부분합에 다음 원소를 더했을 때 음수라면 0으로 초기화
+            max[0] = Math.Max(0, max[0] + pulseSequence[0, i]);
+            
+            //최대 부분합 갱신
+            answer = Math.Max(answer, max[0]);
+        }
+        
+        for(int i = 0; i < pulseSequence.GetLength(1); i++){
+            max[1] = Math.Max(0, max[1] + pulseSequence[1, i]);
+            
+            answer = Math.Max(answer, max[1]);
+        }
+        
+        return answer;
+    }
+}
