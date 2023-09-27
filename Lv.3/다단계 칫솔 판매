@@ -1,0 +1,58 @@
+using System;
+using System.Collections.Generic;
+
+public class Solution {
+    public int[] solution(string[] enroll, string[] referral, string[] seller, int[] amount) {
+        int[] answer = new int[enroll.Length];
+        
+        //<현재 구성원 이름, 상위 추천인 이름>
+        Dictionary<string, string> referDict = new Dictionary<string, string>();
+
+        //<현재 구성원 이름, 이익금>
+        Dictionary<string, int> sellDict = new Dictionary<string, int>();
+        
+        //모든 Dictionary에 정보 입력
+        for(int i = 0; i < enroll.Length; i++){
+            referDict.Add(enroll[i], referral[i]);
+            sellDict.Add(enroll[i], 0);
+        }
+        
+        //seller 정보에 대해 반복
+        for(int i = 0; i < seller.Length; i++){
+
+            //현재 발생한 판매 대금
+            int sellVal = amount[i] * 100;
+
+            //현재 구성원 이름
+            string curPerson = seller[i];
+
+            //상위 추천인 이름이 없을 때까지 반복
+            while(true){
+                if(curPerson.Equals("-")){
+                    break;
+                }
+
+                //추가된 부분, 현재 이익금이 더 이상 배분할 수 없으면 반복문 종료
+                if(sellVal == 0){
+                    break;
+                }
+
+                //현재 구성원은 남은 판매대금의 90%를 가진다
+                sellDict[curPerson] += sellVal - sellVal/10;
+
+                //남은 10%의 판매대금을 남기고 상위 추천인에 전달
+                sellVal /= 10;
+                
+                //현재 구성원을 현재 구성원의 상위 추천인으로 갱신
+                curPerson = referDict[curPerson];
+            }
+        }
+        
+        //enroll 순서대로 이익금 갱신
+        for(int i = 0; i < enroll.Length; i++){
+            answer[i] = sellDict[enroll[i]];
+        }
+        
+        return answer;
+    }
+}
