@@ -1,0 +1,65 @@
+using System;
+using System.Collections.Generic;
+public class Solution {
+    public int solution(int[,] scores) {
+         
+        //등수는 항상 1부터 시작하므로 초기값 설정
+        int answer = 1;
+
+        //완호(첫 번째 데이터) 총 점수
+        int wanhoScore = scores[0, 0] + scores[0, 1];
+        
+        //탐색 이전에 완호가 인센티브를 받지 못한다면 -1을 반환
+        for(int i = 1; i < scores.GetLength(0); i++){
+            if(scores[0, 0] < scores[i, 0] && scores[0, 1] < scores[i, 1]){
+                return -1;
+            }
+        }
+
+        //정렬을 간단하게 하기 위해 List를 이용
+        List<Tuple<int, int>> scoreList = new List<Tuple<int, int>>();
+
+        //입력 데이터를 튜플로 변환하여 리스트에 저장
+        for(int i = 0; i < scores.GetLength(0); i++){
+            scoreList.Add(new Tuple<int, int>(scores[i, 0], scores[i, 1]));
+        }
+
+        //1번 점수를 기준으로 내림차순, 2번 점수를 기준으로 오름차순
+        scoreList.Sort((a, b) =>
+        {
+            int result = b.Item1.CompareTo(a.Item1);
+            if (result == 0){
+                result = a.Item2.CompareTo(b.Item2);
+            }
+            return result;
+        });
+        
+        //해당 위치의 데이터가 인센티브를 받는지 표시
+        bool[] canIncentive = new bool[scoreList.Count];
+        
+        //첫 번째 데이터는 기준 데이터이므로 true 표시
+        canIncentive[0] = true;
+        
+        //기준 데이터 포인터
+        int cur = 0;
+        
+        //인센티브에 제외되는 데이터를 탐색
+        for(int i = 1; i < scoreList.Count; i++){
+            
+            //기준 데이터보다 하나라도 낮지 않은 점수가 존재한다면 bool 배열 및 기준 데이터 갱신
+            if(scoreList[cur].Item1 <= scoreList[i].Item1 || scoreList[cur].Item2 <= scoreList[i].Item2){
+                canIncentive[i] = true;
+                cur = i;
+            }
+        }
+        
+
+        //총 점수 뿐만 아니라 인센티브를 받는 데이터인지 검사
+        for(int i = 0; i < scoreList.Count; i++){
+            if(wanhoScore < scoreList[i].Item1 + scoreList[i].Item2 && canIncentive[i]){
+                answer++;
+            }
+        }
+        return answer;
+    }
+}
