@@ -1,0 +1,58 @@
+using System;
+using System.Collections.Generic;
+public class Solution {
+    public int solution(int n, int[,] results) {
+        int answer = 0;
+
+        //정점을 잇는 간선 존재 유무에 대한 그래프
+        bool[,] graph = new bool[n, n];
+
+        //그래프 초기값 설정
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < n; j++){
+                if(i == j){
+                    graph[i, j] = true;
+                } else {
+                    graph[i, j] = false;
+                }
+            }
+        }
+
+        //입력 데이터에 대해 그래프 갱신
+        for(int i = 0; i < results.GetLength(0); i++){
+            graph[results[i, 0]-1, results[i, 1]-1] = true;
+        }
+        
+
+        //입력 데이터로부터 추론 가능한 데이터를 추가
+        for(int k = 0; k < n; k++){
+            for(int i = 0; i < n; i++){
+                for(int j = 0; j < n; j++){
+                    if(graph[i, k] && graph[k, j]){
+                        graph[i, j] = true;
+                    }
+                }
+            }
+        }
+
+        //이후 첫 정점부터 마지막 정점까지 간선(승부 횟수)이 n-1개 존재하는지 검사
+        //간선이 n-1개 존재한다면 순위를 확정할 수 있다
+        for(int i = 0; i < n; i++){
+            int connection = 0;
+            for(int j = 0; j < n; j++){
+                if(i == j){
+                    continue;
+                }
+                if(graph[i, j] || graph[j, i]){
+                    connection++;
+                }
+            }
+
+            if(connection == n-1){
+                answer++;
+            }
+        }
+
+        return answer;
+    }
+}
