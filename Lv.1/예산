@@ -1,0 +1,24 @@
+using System;
+
+public class Solution {
+    public int solution(int[] d, int budget) {
+        int answer = 0;
+        
+        //부서 배열 정렬
+        Array.Sort(d);
+        
+        //반복문을 이용하여 부서에 지원한 금액을 예산에서 제한다
+        for(int i = 0; i < d.Length; i++){
+            budget -= d[i];
+            
+            //예산이 떨어졌다면 반복문 종료
+            if(budget < 0){
+                break;
+            }
+            
+            //예산을 나눠준 뒤에 예산이 남아있다면 지원한 부서 개수 증가
+            answer++;
+        }
+        return answer;
+    }
+}
