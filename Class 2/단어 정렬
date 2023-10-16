@@ -1,0 +1,49 @@
+using System;
+using System.Collections.Generic;
+class Program
+{
+    static void Main(string[] args)
+    {
+        //문자열을 입력 받는 횟수
+        int n = int.Parse(Console.ReadLine());
+
+        //중복되지 않는 문자열을 저장
+        List<string> words = new List<string>();
+
+        
+        for(int i = 0; i < n; i++)
+        {
+            //먼저 다른 변수에 문자열을 입력받은 뒤
+            string temp = Console.ReadLine();
+
+            //Contains 메소드를 통해 중복되지 않는 문자열만 저장
+            if (!words.Contains(temp))
+            {
+                words.Add(temp);
+            }
+        }
+
+        //Sort 메소드로 문자열 정렬
+        words.Sort((a, b) => {
+            
+            //먼저 문자열 길이에 대해 오름차순 정렬
+            int isSameLength = a.Length.CompareTo(b.Length);
+
+            //문자열 길이가 같은 경우 사전 순으로 정렬
+            if (isSameLength != 0)
+            {
+                return isSameLength;
+            }
+            else
+            {
+                return a.CompareTo(b);
+            }
+        });
+
+        //이후 정렬된 순서대로 문자열 출력
+        for (int i = 0; i < words.Count; i++)
+        {
+            Console.WriteLine(words[i]);
+        }
+    }
+}
