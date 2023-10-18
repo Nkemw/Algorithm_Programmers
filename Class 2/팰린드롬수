@@ -1,0 +1,49 @@
+using System;
+using System.Collections.Generic;
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        //0이 입력될 때까지 반복
+        while(true)
+        {
+            string word = reader.ReadLine();
+
+            if(word.Equals("0"))
+            {
+                break;
+            }
+
+            //팰린드롬이면 yes, 아니면 no를 출력한다
+            if (IsPalindrome(word))
+            {
+                writer.WriteLine("yes");
+            } else
+            {
+                writer.WriteLine("no");
+            }
+
+        }
+
+        reader.Close();
+        writer.Close();
+    }
+
+    static bool IsPalindrome(string str)
+    {
+        //수를 반으로 갈라 모든 자릿수가 대칭을 이루지 않으면 팰린드롬수가 아니다
+        for (int i = 0; i < str.Length/2; i++)
+        {
+            if (str[i] != str[str.Length - i - 1])
+            {
+                return false;
+            }
+        }
+
+        //모든 자릿수가 대칭을 이루면 팰린드롬수이다.
+        return true;
+    }
+}
