@@ -1,0 +1,38 @@
+using System;
+using System.Collections.Generic;
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        //종말의 수들 중 N번째
+        int targetOrder = int.Parse(reader.ReadLine());
+
+        //현재까지 구한 종말의 수 개수
+        int curOrder = 0;
+
+        //종말의 수 검사용 정수형 변수
+        int num = 0;
+
+        //N번째 종말의 수를 구할 때까지 반복
+        while (curOrder < targetOrder)
+        {
+            //숫자 변수를 1씩 증가시킨다.
+            num++;
+
+            //이후 숫자 변수에 666이 포함되었는 지 검사하여 포함되었다면 curOrder변수 갱신
+            if (num.ToString().Contains("666"))
+            {
+                curOrder++;
+            }
+        }
+
+        //N번째 종말의 수를 구했을 때 정수값을 출력
+        writer.Write(num.ToString());
+
+        reader.Close();
+        writer.Close();
+    }
+}   
