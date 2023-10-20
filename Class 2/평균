@@ -1,0 +1,61 @@
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        //시험 점수들의 수
+        int scoreCount = int.Parse(reader.ReadLine());
+
+        //시험 점수들을 문자열로 저장
+        string[] strScores = reader.ReadLine().Split();
+
+        //입력된 시험 점수 문자열을 float형으로 저장하기 위한 배열
+        float[] scores = new float[scoreCount];
+
+        //최고점을 저장하는 변수
+        float max = 0f;
+
+        //문자열 점수를 float형으로 파싱하며 최고점을 저장
+        for (int i = 0; i < scoreCount; i++)
+        {
+            scores[i] = float.Parse(strScores[i]);
+            max = Math.Max(max, scores[i]);
+        }
+
+        //최고점에 대하여 모든 점수 갱신
+        for (int i = 0; i < scoreCount; i++)
+        {
+            scores[i] = FixScore(max, scores[i]);
+        }
+
+        //갱신된 모든 점수에 대한 평균 출력
+        writer.Write(GetAvg(scores));
+
+        reader.Close();
+        writer.Close();
+    }
+
+    //최고점과 점수를 받아 최고점에 대한 점수로 갱신
+    static float FixScore(float max, float score)
+    {
+        return score / max * 100f;
+    }
+
+    //float 배열을 받아 모든 원소를 더한 뒤 평균값 반환
+    static float GetAvg(float[] scores)
+    {
+        float sum = 0;
+
+        for (int i = 0; i < scores.Length; i++)
+        {
+            sum += scores[i];
+        }
+
+        return sum / scores.Length;
+    }
+}
