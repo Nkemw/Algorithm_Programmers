@@ -1,0 +1,73 @@
+using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        int n = int.Parse(reader.ReadLine());
+
+        //2와 5의 약수 개수를 저장
+        int twoCount = 0;
+        int fiveCount = 0;
+
+        //1부터 N까지 2와 5의 약수 개수를 구한다
+        for(int i = 1; i <= n; i++)
+        {
+            twoCount += FindTwoCount(i);
+            fiveCount += FindFiveCount(i);
+        }
+
+        //2와 5의 약수 개수 중 작은 값을 출력
+        writer.Write(Math.Min(twoCount, fiveCount));
+
+        reader.Close();
+        writer.Close();
+    }
+
+    //어떤 자연수를 입력받았을 때 해당 수가 포함하는 2의 약수 개수를 구하는 함수
+    static int FindTwoCount(int i)
+    {
+        int twoCount = 0;
+
+        while (true)
+        {
+            if(i % 2 == 0)
+            {
+                i /= 2;
+                twoCount++;
+            } else
+            {
+                break;
+            }
+        }
+
+        return twoCount;
+    }
+
+    //어떤 자연수를 입력받았을 때 해당 수가 포함하는 5의 약수 개수를 구하는 함수
+    static int FindFiveCount(int i)
+    {
+        int fiveCount = 0;
+
+        while (true)
+        {
+            if (i % 5 == 0)
+            {
+                i /= 5;
+                fiveCount++;
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        return fiveCount;
+    }
+
+}
