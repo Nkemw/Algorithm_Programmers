@@ -1,0 +1,100 @@
+using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        int n = int.Parse(reader.ReadLine());
+
+        string[] tempArr = new string[n];
+
+        for(int i = 0; i < n; i++)
+        {
+            tempArr[i] = reader.ReadLine();
+        }
+
+        //입력 수열 배열
+        int[] numList = StringArrToIntArr(tempArr);
+
+        //Push, Pop 연산을 적용할 스택
+        Stack<int> stack = new Stack<int>();
+
+        //출력이 용이하도록 StringBuilder 사용
+        StringBuilder sb = new StringBuilder();
+
+        //Push 연산 수행 시 스택에 저장할 값
+        int curPoint = 1;
+
+        //입력 수열의 모든 수에 대하여 연산 수행
+        for(int i = 0; i < numList.Length; i++)
+        {
+            //최초로 Pop 연산이 발생할 때까지 반복
+            while (true)
+            {
+                //스택이 비어 있다면 자료 추가
+                if(stack.Count == 0)
+                {
+                    stack.Push(curPoint);
+                    curPoint++;
+
+                    sb.AppendLine("+");
+                }
+
+                //이후 스택의 다음 출력할 값과 입력 수열의 수를 비교하여 맞는 연산을 수행
+                //입력 수열의 수가 큰 경우는 Push 연산 수행
+                if(stack.Peek() < numList[i])
+                {
+                    stack.Push(curPoint);
+                    curPoint++;
+
+                    sb.AppendLine("+");
+
+                } else if(stack.Peek() == numList[i]) {
+                    //입력 수열의 수와 같은 경우 Pop 연산을 수행한 뒤 while문 종료
+     
+                    stack.Pop();
+
+                    sb.AppendLine("-");
+                    break;
+                } else
+                {
+                    //입력 수열의 수가 작다면 입력 수열대로 연산을 수행할 수 없으므로 NO 출력
+                    sb = new StringBuilder();
+                    sb.Append("NO");
+
+                    writer.Write(sb.ToString());
+                    writer.Flush();
+                    return;
+                }
+            }
+        }
+
+        //위 반복문을 처리했다면, 입력 수열대로 연산을 수행했으므로 StringBuilder에 저장된 문자열 출력
+        writer.Write(sb.ToString());
+
+        reader.Close();
+        writer.Close();
+
+    }
+
+   
+
+    static int[] StringArrToIntArr(string[] strArr)
+    {
+        int[] intArr = new int[strArr.Length];
+
+        for(int i = 0; i < strArr.Length; i++)
+        {
+            intArr[i] = int.Parse(strArr[i]);
+        }
+
+        return intArr;
+    }
+
+}
