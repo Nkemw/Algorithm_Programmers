@@ -1,0 +1,74 @@
+using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        string[] temp = reader.ReadLine().Split();
+
+        int m = int.Parse(temp[0]);
+        int n = int.Parse(temp[1]);
+
+        StringBuilder sb = new StringBuilder();
+
+        //소수 리스트
+        List<int> primeList = new List<int>();
+
+        //소수인지 판별할 범위를 n까지 제한
+        bool[] isDivided = new bool[n+1];
+
+        //먼저 제한된 범위 내 존재하는 소수들을 찾아 리스트에 추가
+        for(int i = 2; i*i <= n; i++)
+        {
+            bool isDivide = false;
+            for(int j = 0; j < primeList.Count; j++)
+            {
+                if(i % primeList[j] == 0)
+                {
+                    isDivide = true;
+                    break;
+                }
+            }
+            if (!isDivide)
+            {
+                primeList.Add(i);
+            }
+        }
+
+        //소수의 곱으로 표현되는 수를 표시
+        for(int i = 0; i < primeList.Count; i++)
+        {
+            for(int j = primeList[i]; j <= n; j += primeList[i])
+            {
+                if(j != primeList[i])
+                {
+                    isDivided[j] = true;
+                }
+            }
+        }
+
+        //m과 n 사이 소수의 곱으로 표현되지 않는 수들을 출력하기 위해 StringBuilder에 추가
+        for(int i = Math.Max(2, m); i <= n; i++)
+        {
+            if (!isDivided[i])
+            {
+                sb.AppendLine(i.ToString());
+            }
+        }
+       
+        //소수로 이루어진 문자열 출력
+        writer.Write(sb.ToString());
+
+        reader.Close();
+        writer.Close();
+
+    }
+
+
+}
