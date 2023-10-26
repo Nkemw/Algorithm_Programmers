@@ -1,0 +1,93 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.InteropServices;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+        StringBuilder sb = new StringBuilder();
+
+        //테스트 케이스 횟수
+        int testCount = int.Parse(reader.ReadLine());
+
+        for(int i = 0; i < testCount; i++) {
+            string[] temp = reader.ReadLine().Split();
+
+            //문서의 개수 n, 몇 번째로 출력되는 지 추적할 자료의 위치 m
+            int n = int.Parse(temp[0]);
+            int m = int.Parse(temp[1]);
+
+            temp = reader.ReadLine().Split();
+
+            //중요도 순으로 자료를 나열하도록 리스트에 자료 저장
+            List<Tuple<int, int>> priorityList = StringArrToList(temp);
+
+            //큐 연산을 진행할 자료구조 선언
+            Queue<Tuple<int, int>> queue = new Queue<Tuple<int, int>>();
+
+            //리스트에 자료를 저장한 뒤 중요도 내림차순 정렬
+            for(int j = 0; j < priorityList.Count; j++) {
+                queue.Enqueue(new Tuple<int, int>(priorityList[j].Item1 , priorityList[j].Item2));
+            }
+
+            priorityList.Sort((a, b) => b.Item1.CompareTo(a.Item1));
+
+            //현재 리스트 포인터
+            int pointer = 0;
+
+            //모든 자료를 출력할 때까지 반복
+            while(queue.Count > 0)
+            {
+                //현재 찾고자 하는 중요도에 해당하는 자료인 경우
+                if(queue.Peek().Item1 == priorityList[pointer].Item1)
+                {
+                    //몇 번째로 출력되는지 찾는 자료라면 순서를 출력하고 반복문 종료
+                    if(queue.Peek().Item2 == m)
+                    {
+                        sb.AppendLine((pointer + 1).ToString());
+                        break;
+                    }
+
+                    //찾는 자료가 아니라면 큐에서 제거한 뒤 리스트 포인터 증가
+                    queue.Dequeue();
+
+                    pointer++;
+                } else
+                {
+                    //현재 찾고자 하는 중요도가 아니라면 현재 자료를 큐의 뒷 부분에 저장
+                    Tuple<int, int> tupleTemp = queue.Dequeue();
+                    queue.Enqueue(new Tuple<int, int>(tupleTemp.Item1, tupleTemp.Item2));
+                }
+            }
+
+
+
+        }
+
+        writer.Write(sb.ToString());
+
+        reader.Close();
+        writer.Close();
+
+    }
+
+   
+
+    static List<Tuple<int, int>> StringArrToList(string[] strArr)
+    {
+        List<Tuple<int, int>> temp = new List<Tuple<int, int>>();
+
+        for(int i = 0; i < strArr.Length; i++)
+        {
+            temp.Add(new Tuple<int, int>(int.Parse(strArr[i]), i));
+        }
+
+        return temp;
+    }
+
+}
