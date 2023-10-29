@@ -1,0 +1,44 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.InteropServices;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        //N을 입력 받기
+        int numCount = int.Parse(reader.ReadLine());
+
+        //1부터 N까지의 수를 저장할 큐 자료구조
+        Queue<int> queue = new Queue<int>();
+
+        //큐에 1부터 N까지의 수를 저장
+        for(int i = 0; i < numCount; i++)
+        {
+            queue.Enqueue(i+1);
+        }
+
+        //큐의 크기가 1이 될 때까지 반복
+        while(queue.Count > 1)
+        {
+            //1. 큐의 시작 부분에 있는 자료 제거
+            queue.Dequeue();
+
+            //2. 큐의 시작 부분에 있는 자료를 끝 부분에 추가
+            queue.Enqueue(queue.Dequeue());
+        }
+
+        //마지막으로 큐에 남아있는 자료 출력
+        writer.Write(queue.Dequeue());
+
+        reader.Close();
+        writer.Close();
+
+    }
+
+}
