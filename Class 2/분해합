@@ -1,0 +1,52 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.InteropServices;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        //분해합을 했을 때 나와야 하는 수
+        int targetNum = int.Parse(reader.ReadLine());
+
+        //입력값 N에 대한 생성자 결과를 저장할 변수
+        int answer = 0;
+
+        //1부터 N까지 반복
+        for(int i = 1; i < targetNum; i++)
+        {
+
+            //1부터 N사이의 값 i를 저장
+            int temp = i;
+
+            //1. 임시 분해합 저장, 먼저 i를 저장한다
+            int sum = temp;
+
+            //2. i의 각 자릿수의 합을 저장
+            while(temp > 0)
+            {
+                sum += temp % 10;
+                temp /= 10;
+            }
+
+            //i와 i의 각 자릿수의 합이 N이라면 i를 저장하고 반복문 종료
+            if(sum == targetNum)
+            {
+                answer = i;
+                break;
+            }
+        }
+         
+        //결과 출력
+        writer.Write(answer);
+
+        reader.Close();
+        writer.Close();
+
+    }
+}
