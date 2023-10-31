@@ -1,0 +1,49 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.InteropServices;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        //이동하려는 방의 번호
+        int targetNum = int.Parse(reader.ReadLine());
+
+        //최소 경유한 방의 개수, 시작점과 끝 점을 포함하므로 1부터 시작
+        int answer = 1;
+
+        //경유한 방의 개수에 대한 최대 방 번호
+        int sum = 1;
+
+        //경유한 방의 개수에 대한 방 번호 증가량
+        int increaseValue = 0;
+
+        while (true)
+        {
+            //경유한 방의 개수에 대한 최대 방 번호가 이동하려는 방의 번호 이상이라면 반복문 종료
+            if(sum >= targetNum)
+            {
+                break;
+            } else
+            {
+                //이동하려는 방의 번호가 더 크다면 경유 방 개수를 늘려 방 번호를 증가
+                //경유한 방의 개수에 따라 증가량을 6만큼 증가
+                increaseValue += 6;
+                sum += increaseValue;
+                answer++;
+            }
+        }
+
+        //결과 출력
+        writer.Write(answer);
+
+        reader.Close();
+        writer.Close();
+
+    }
+}
