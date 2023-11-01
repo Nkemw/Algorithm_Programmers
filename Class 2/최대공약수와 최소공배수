@@ -1,0 +1,58 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.InteropServices;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        string[] temp = reader.ReadLine().Split();
+
+        //자연수 a, b 저장
+        int a = int.Parse(temp[0]);
+        int b = int.Parse(temp[1]);
+
+        //최대공약수 및 최소공배수 저장
+        int gcd = Gcd(a, b);
+        int lcm = a * b / gcd;
+
+        //최대공약수 및 최소공배수 출력
+        writer.WriteLine(gcd);
+        writer.WriteLine(lcm);
+
+        reader.Close();
+        writer.Close();
+
+    }
+
+    //유클리드 호제법 
+    static int Gcd(int a, int b)
+    {
+        if(b == 0)
+        {
+            return a;
+        } else
+        {
+            return Gcd(b, a % b);
+        }
+    }
+
+    //문자열 배열을 정수 배열로 변환
+    static int[] StringArrToIntArr(string[] strArr)
+    {
+        int[] temp = new int[strArr.Length];
+
+        for(int i = 0; i < strArr.Length; i++)
+        {
+            temp[i] = int.Parse(strArr[i]);
+        }
+
+        return temp;
+    }
+
+}
