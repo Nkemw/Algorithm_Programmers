@@ -1,0 +1,67 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.InteropServices;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        string[] temp = reader.ReadLine().Split();
+
+        //카드 개수 n, 목표값 m
+        int n = int.Parse(temp[0]);
+        int m = int.Parse(temp[1]);
+
+        temp = reader.ReadLine().Split();
+
+        //각 카드에 부여된 값
+        int[] nums = StringArrToIntArr(temp);
+
+        //m과 가장 가까운 값의 차를 저장하는 변수
+        int minDiff = Int32.MaxValue;
+
+        //3중 반복문을 이용해 임의의 카드 3장을 선택
+        for(int i = 0; i < n; i++)
+        {
+            for(int j = i + 1; j < n; j++)
+            {
+                for(int k = j + 1; k < n; k++)
+                {
+                    //카드 3장의 합계
+                    int sum = nums[i] + nums[j] + nums[k];
+
+                    //카드 3장의 합계가 m 이하인 경우
+                    //이전 차이값과 비교하여 더 작은 값을 저장
+                    if (m >= sum)
+                    {
+                        minDiff = Math.Min(minDiff, m - sum);
+                    }
+                }
+            }
+        }
+
+        //차이가 가장 작은 값을 m에서 다시 제함으로써 m과 가장 가까운 값을 출력
+        writer.WriteLine(m - minDiff);
+
+        reader.Close();
+        writer.Close();
+    }
+
+    static int[] StringArrToIntArr(string[] strArr)
+    {
+        int[] temp = new int[strArr.Length];
+
+        for(int i = 0; i < strArr.Length; i++)
+        {
+            temp[i] = int.Parse(strArr[i]);
+        }
+
+        return temp;
+    }
+
+}
