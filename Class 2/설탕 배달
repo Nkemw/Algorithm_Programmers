@@ -1,0 +1,40 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.InteropServices;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        //N 킬로그램
+        int n = int.Parse(reader.ReadLine());
+
+        //봉지를 최소로 사용한 개수, 모든 경우를 탐색해도 옮길 수 없다면 -1을 출력하도록 설정
+        int minBag = -1;
+
+        //5kg을 최대로 사용할 수 있는 경우부터 시작
+        for(int i = n/5; i >= 0; i--)
+        {
+            //5kg으로 옮긴 뒤 남은 kg을 저장
+            int rest = n - i * 5;
+
+            //나머지가 3kg으로 옮길 수 있다면 최소 사용 개수를 저장하고 반복문 종료
+            if(rest % 3 == 0)
+            {
+                minBag = i + rest / 3;
+                break;
+            }
+        }
+
+        //봉지 최소 사용 개수 출력
+        writer.Write(minBag);
+
+        reader.Close();
+        writer.Close();
+    }
+}
