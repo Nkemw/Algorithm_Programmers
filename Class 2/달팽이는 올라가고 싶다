@@ -1,0 +1,47 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.InteropServices;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        string[] temp = reader.ReadLine().Split();
+
+        //하루에 a미터 올라가고, b미터 내려가며 v미터를 목표
+        int a = int.Parse(temp[0]);
+        int b = int.Parse(temp[1]);
+        int v = int.Parse(temp[2]);
+
+        //소요 일수
+        int day = 1;
+
+        //땅(원점)으로부터 떨어진 현재 위치
+        int curPos = a;
+
+        //V미터를 오르기 위해 이틀 이상 소요된 경우
+        if(curPos < v) {
+            
+            //나머지 거리를 (a-b)로 나누어 나머지에 따라 일수 추가
+            if ((v - curPos) % (a - b) == 0)
+            {
+                day += (v - curPos) / (a - b);
+            }
+            else
+            {
+                day += (v - curPos) / (a - b) + 1;
+            }
+        }
+
+        //소요 일수 출력
+        writer.Write(day);
+
+        reader.Close();
+        writer.Close();
+    }
+}
