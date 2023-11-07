@@ -1,0 +1,44 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.InteropServices;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        while (true)
+        {
+            string[] temp = reader.ReadLine().Split();
+
+            //임의의 자연수 값 a,b,c
+            int a = int.Parse(temp[0]);
+            int b = int.Parse(temp[1]);
+            int c = int.Parse(temp[2]);
+
+            //세 값이 모두 0이라면 반복문 종료
+            if(a == 0 && b == 0 && c == 0)
+            {
+                break;
+            }
+
+            //a, b, c 모두 가장 긴 변이라고 가정하여 피타고라스 정리를 적용
+            //아래 세 조건문 중 한 가지만 만족한다면 right, 아니라면 wrong 출력
+            if(a*a + b*b == c*c || a*a + c*c == b*b || b*b + c*c == a*a)
+            {
+                writer.WriteLine("right");
+            } else
+            {
+                writer.WriteLine("wrong");
+            }
+        }
+
+
+        reader.Close();
+        writer.Close();
+    }
+}
