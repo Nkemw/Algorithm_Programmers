@@ -1,0 +1,97 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.InteropServices;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        //매 문장에 대해 반복
+        while (true)
+        {
+            //임시 저장된 문자열
+            string temp = reader.ReadLine();
+
+            //좌괄호를 저장
+            Stack<char> stack = new Stack<char>();
+
+            //임시 저장된 문자열이 .이면 반복문 종료
+            if (temp.Equals("."))
+            {
+                break;
+            }
+
+            //임시 문자열의 모든 문자를 검사
+            for(int i = 0; i < temp.Length; i++)
+            {
+                //좌괄호가 나오면 스택에 저장
+                if (temp[i] == '(' || temp[i] == '[')
+                {
+                    stack.Push(temp[i]);
+                } else if (temp[i] == ')' || temp[i] == ']')
+                {
+
+                    //우괄호가 나오면 스택에 저장된 좌괄호와 종류를 비교
+                    if(stack.Count > 0)
+                    {
+                        //소괄호인 우괄호가 나온 경우
+                        if (temp[i] == ')')
+                        {
+                            //스택의 출력 문자가 소괄호라면 스택에 문자 제거
+                            //아니라면 올바르지 않은 문장이므로 no 출력
+                            if (stack.Peek() == '(')
+                            {
+                                stack.Pop();
+                            } else
+                            {
+                                writer.WriteLine("no");
+                                break;
+                            }
+                        } else
+                        {
+                            //대괄호인 우괄호가 나온 경우
+                            //소괄호 처리와 동일하게 처리
+                            if (stack.Peek() == '[')
+                            {
+                                stack.Pop();
+                            }
+                            else
+                            {
+                                writer.WriteLine("no");
+                                break;
+                            }
+                        }
+                    } else
+                    {
+                        //스택에 저장된 좌괄호가 없다면 올바르지 않은 문장이므로 no 출력
+                        writer.WriteLine("no");
+                        break;
+                    }
+                }
+
+                //모든 문자를 검사한 경우
+                if(i == temp.Length - 1)
+                {
+                    //스택에 저장된 괄호 문자가 없다면 yes 출력
+                    //스택에 남아있는 괄호 문자가 있다면 no 출력
+                    if (stack.Count == 0)
+                    {
+                        writer.WriteLine("yes");
+                    } else
+                    {
+                        writer.WriteLine("no");
+                    }
+                }
+            }
+        }
+
+
+        reader.Close();
+        writer.Close();
+    }
+}
