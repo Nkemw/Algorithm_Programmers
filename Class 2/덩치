@@ -1,0 +1,76 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.InteropServices;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        int n = int.Parse(reader.ReadLine());
+
+        //모든 사람들의 몸무게와 키를 저장하기 위해 2차원 배열 선언
+        int[,] info = new int[n, 2];
+
+        //선언한 2차원 배열에 몸무게와 키 데이터 저장
+        for(int i = 0; i < n; i++)
+        {
+            string[] temp = reader.ReadLine().Split();
+            int[] data = StringArrToIntArr(temp);
+
+            info[i, 0] = data[0];
+            info[i, 1] = data[1];
+        }
+        
+        //각 사람은 자신을 제외한 모든 사람들과 몸무게와 키를 비교
+        for(int i = 0; i < n; i++)
+        {
+            //현재 비교하는 사람의 덩치 등수
+            int rank = 1;
+
+            //현재 비교하는 사람의 몸무게와 키
+            int weight = info[i, 0];
+            int height = info[i, 1];
+
+            for (int j = 0; j < n; j++) {
+                
+                //자신을 제외한 모든 사람들과 몸무게와 키를 비교하여 모두 작을 경우 등수 증가
+                if (i != j) {
+                    if(weight < info[j, 0] && height < info[j, 1])
+                    {
+                        rank++;
+                    }
+                }
+            }
+
+            //비교를 끝내면 현재 비교하는 사람의 덩치 등수를 출력
+            if(i != n - 1)
+            {
+                writer.Write(rank.ToString() + " ");
+            } else
+            {
+                writer.Write(rank.ToString());
+            }
+        }
+
+        reader.Close();
+        writer.Close();
+    }
+
+    static int[] StringArrToIntArr(string[] strArr)
+    {
+        int[] temp = new int[strArr.Length];
+
+        for(int i = 0; i < strArr.Length; i++)
+        {
+            temp[i] = int.Parse(strArr[i]);
+        }
+
+        return temp;
+    }
+
+}
