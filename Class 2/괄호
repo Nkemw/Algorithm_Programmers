@@ -1,0 +1,67 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.InteropServices;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        //입력받을 괄호 문자열 개수
+        int n = int.Parse(reader.ReadLine());
+
+        //입력받을 괄호 문자열 개수만큼 반복
+        for(int i = 0; i < n; i++)
+        {
+            //검사할 괄호 문자열
+            string str = reader.ReadLine();
+
+            //좌괄호를 저장하는 스택 자료구조
+            Stack<char> stack = new Stack<char>();
+
+            //괄호 문자열의 모든 문자를 검사
+            for (int j = 0; j < str.Length; j++) {
+
+                //좌괄호를 만나면 스택에 저장
+                if (str[j] == '(')
+                {
+                    stack.Push(str[j]);
+                } else
+                {
+
+                    //우괄호를 만나면 스택에 저장된 좌괄호 개수가 0인 경우 NO를 출력
+                    //스택에 저장된 좌괄호 개수가 1 이상이라면 스택 데이터 1개 제거
+                    if(stack.Count == 0)
+                    {
+                        writer.WriteLine("NO");
+                        break;
+                    } else
+                    {
+                        stack.Pop();
+                    }
+                }
+
+                //모든 문자열 검사를 끝낸 경우
+                if(j == str.Length - 1)
+                {
+                    //스택에 좌괄호 데이터가 남아있다면 NO, 데이터가 남아 있지 않다면 YES를 출력
+                    if(stack.Count > 0)
+                    {
+                        writer.WriteLine("NO");
+                    } else
+                    {
+                        writer.WriteLine("YES");
+                    }
+                }
+            }
+
+        }
+
+        reader.Close();
+        writer.Close();
+    }
+}
