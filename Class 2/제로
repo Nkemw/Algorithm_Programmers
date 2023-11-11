@@ -1,0 +1,56 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.InteropServices;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        //1 이상의 정수를 저장할 스택 자료구조
+        Stack<int> stack = new Stack<int>();
+
+        //정수 입력 횟수
+        int n = int.Parse(reader.ReadLine());
+
+        //합계
+        int sum = 0;
+
+        //정수 입력 횟수만큼 반복
+        for(int i = 0; i < n; i++)
+        {
+            //현재 입력 받은 정수
+            int curValue = int.Parse(reader.ReadLine());
+            
+            //정수가 0인 경우
+            if(curValue == 0)
+            {
+                //스택의 크기가 1 이상이라면 저장된 데이터 제외
+                if(stack.Count > 0)
+                {
+                    stack.Pop();
+                }
+            } else
+            {
+                //정수가 1 이상이라면 스택에 정수 저장
+                stack.Push(curValue);
+            }
+            
+        }
+
+        //위 반복문 이후 스택에 저장된 데이터들을 꺼내 합계에 추가
+        while(stack.Count > 0) { 
+            sum += stack.Pop();
+        }
+
+        //합계 출력
+        writer.Write(sum);
+
+        reader.Close();
+        writer.Close();
+    }
+}
