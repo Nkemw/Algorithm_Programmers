@@ -1,0 +1,50 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.InteropServices;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        //<나이, 이름, 순서>
+        List<Tuple<int, string, int>> infoList = new List<Tuple<int, string, int>>();
+
+        //입력 받을 데이터 개수
+        int n = int.Parse(reader.ReadLine());
+
+        //입력 데이터를 리스트에 순서대로 저장
+        for(int i = 0; i < n; i++)
+        {
+            string[] temp = reader.ReadLine().Split();
+
+            infoList.Add(new Tuple<int, string, int>(int.Parse(temp[0]), temp[1], i));
+        }
+
+        //표준 라이브러리 정렬 함수를 사용해 나이 오름차순 정렬 및 입력 순서 오름차순 정렬
+        infoList.Sort((a, b) =>
+        {
+            int compareResult = a.Item1.CompareTo(b.Item1);
+
+            if (compareResult == 0)
+            {
+                compareResult = a.Item3.CompareTo(b.Item3);
+            }
+
+            return compareResult;
+        });
+
+        //정렬된 리스트를 순서대로 출력
+        for(int i = 0; i < n; i++)
+        {
+            writer.WriteLine(infoList[i].Item1 + " " + infoList[i].Item2);
+        }
+
+        reader.Close();
+        writer.Close();
+    }
+}
