@@ -1,0 +1,57 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.InteropServices;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        //<숫자, 개수>를 저장하기 위해 Dictionary 자료구조 사용
+        Dictionary<int, int> numDict = new Dictionary<int, int>();
+
+        //숫자 n 입력
+        int n = int.Parse(reader.ReadLine());
+
+        //n개의 숫자 입력
+        string[] temp = reader.ReadLine().Split();
+
+        //반복문을 통해 Dictionary에 key-value 저장
+        for(int i = 0; i < temp.Length; i++)
+        {
+            if (numDict.ContainsKey(int.Parse(temp[i])))
+            {
+                numDict[int.Parse(temp[i])]++;
+            } else
+            {
+                numDict.Add(int.Parse(temp[i]), 1);
+            }
+        }
+
+        //숫자 m 입력
+        int m = int.Parse(reader.ReadLine());
+
+        //m개의 숫자 입력
+        temp = reader.ReadLine().Split();
+
+        //반복문을 이용해 키가 존재한다면 value, 존재하지 않으면 0 출력
+        for(int i = 0; i < temp.Length; i++)
+        {
+            if (numDict.ContainsKey(int.Parse(temp[i])))
+            {
+                writer.Write(numDict[int.Parse(temp[i])]);
+            } else
+            {
+                writer.Write(0);
+            }
+            writer.Write(" ");
+        }
+
+        reader.Close();
+        writer.Close();
+    }
+}
