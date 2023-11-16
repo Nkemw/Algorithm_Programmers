@@ -1,0 +1,87 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.InteropServices;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        List<int> dequeList = new List<int>();
+
+        int n = int.Parse(reader.ReadLine());
+
+        for(int i = 0; i < n; i++)
+        {
+            string[] command = reader.ReadLine().Split(' ');
+
+            switch(command[0])
+            {
+                case "push_front":
+                    dequeList.Insert(0, int.Parse(command[1]));
+                    break;
+                case "push_back":
+                    dequeList.Add(int.Parse(command[1]));
+                    break;
+                case "pop_front":
+                    if (dequeList.Count > 0)
+                    {
+                        writer.WriteLine(dequeList[0]);
+                        dequeList.RemoveAt(0);
+                    } else
+                    {
+                        writer.WriteLine(-1);
+                    }
+                    break;
+                case "pop_back":
+                    if (dequeList.Count > 0)
+                    {
+                        writer.WriteLine(dequeList[dequeList.Count - 1]);
+                        dequeList.RemoveAt(dequeList.Count - 1);
+                    } else
+                    {
+                        writer.WriteLine(-1);
+                    }
+                    break;
+                case "size":
+                    writer.WriteLine(dequeList.Count);
+                    break;
+                case "empty":
+                    if(dequeList.Count > 0)
+                    {
+                        writer.WriteLine(0);
+                    } else
+                    {
+                        writer.WriteLine(1);
+                    }
+                    break;
+                case "front":
+                    if(dequeList.Count > 0)
+                    {
+                        writer.WriteLine(dequeList[0]);
+                    } else
+                    {
+                        writer.WriteLine(-1);
+                    }
+                    break;
+                case "back":
+                    if (dequeList.Count > 0)
+                    {
+                        writer.WriteLine(dequeList[dequeList.Count - 1]);
+                    }
+                    else
+                    {
+                        writer.WriteLine(-1);
+                    }
+                    break;
+            }
+        }
+
+        reader.Close();
+        writer.Close();
+    }
+}
