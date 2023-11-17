@@ -1,0 +1,41 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.InteropServices;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        //한 줄을 문자열 배열에 나누어 저장
+        string[] temp = reader.ReadLine().Split();
+
+        //n, k를 정수로 변환하여 저장
+        int n = int.Parse(temp[0]);
+        int k = int.Parse(temp[1]);
+
+        //(n! / (k!(n-k)!) 결과를 출력
+        writer.Write(Factorial(n) / (Factorial(k) * Factorial(n - k)));
+
+        reader.Close();
+        writer.Close();
+    }
+
+    //팩토리얼 연산 함수
+    static int Factorial(int num)
+    {
+        //n - k의 결과가 0 또는 1인 경우를 예외 처리하여 1 출력
+        if(num <= 1)
+        {
+            return 1;
+        } else
+        {
+            //나머지는 일반적인 팩토리얼 연산을 적용
+            return num * Factorial(num - 1);
+        }
+    }
+}
