@@ -1,0 +1,43 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.InteropServices;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        //자연수 값이 그대로 배열에 적용되도록 10000이 아닌 10001개의 저장 공간 할당
+        int[] numArr = new int[10001];
+
+        //입력 받을 자연수의 개수
+        int n = int.Parse(reader.ReadLine());
+
+        //자연수를 입력받아 자연수를 포인터로 사용하여 해당 위치의 값을 1 증가
+        for(int i = 0; i < n; i++)
+        {
+            int num = int.Parse(reader.ReadLine());
+
+            numArr[num]++;
+        }
+
+        //자연수 배열을 순서대로 참조하여 그 값이 0이 아니라면 값만큼 반복하여 해당 위치를 출력
+        for(int i = 0; i < numArr.Length; i++)
+        {
+            if (numArr[i] != 0)
+            {
+                for(int j = 0; j < numArr[i]; j++)
+                {
+                    writer.WriteLine(i);
+                }
+            }
+        }
+
+        reader.Close();
+        writer.Close();
+    }
+}
