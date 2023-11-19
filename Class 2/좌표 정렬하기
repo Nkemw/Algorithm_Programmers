@@ -1,0 +1,53 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.InteropServices;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        //좌표를 저장하는 리스트, <x, y>
+        List<Tuple<int, int>> posList = new List<Tuple<int, int>>();
+
+        //입력 받을 좌표의 개수
+        int n = int.Parse(reader.ReadLine());
+
+        //n번 x, y 좌표를 입력받아 리스트에 Tuple로 저장
+        for(int i = 0; i < n; i++)
+        {
+            string[] temp = reader.ReadLine().Split();
+
+            int x = int.Parse(temp[0]);
+            int y = int.Parse(temp[1]);
+
+            posList.Add(new Tuple<int, int>(x, y));
+        }
+
+        //Sort 메소드를 람다식으로 구현, x 오름차순 정렬 후 x값이 같으면 y 오름차순
+        posList.Sort((a, b) =>
+        {
+            int xSortResult = a.Item1.CompareTo(b.Item1);
+
+            if(xSortResult == 0)
+            {
+                xSortResult = a.Item2.CompareTo(b.Item2);
+            }
+
+            return xSortResult;
+        });
+
+        //정렬된 리스트를 순서대로 출력
+        for(int i = 0; i < n; i++)
+        {
+            writer.WriteLine(posList[i].Item1 + " " + posList[i].Item2);
+        }
+
+        reader.Close();
+        writer.Close();
+    }
+}
