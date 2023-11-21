@@ -1,0 +1,51 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.InteropServices;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        string[] temp = reader.ReadLine().Split();
+
+        int n = int.Parse(temp[0]);
+        int k = int.Parse(temp[1]);
+
+        List<int> list = new List<int>();
+
+        //1번부터 N번 번호를 리스트에 저장
+        for(int i = 0; i < n; i++)
+        {
+            list.Add(i + 1);
+        }
+
+        //리스트 포인터
+        int pointer = k-1;
+
+        writer.Write("<");
+
+        //리스트의 자료가 하나만 남을 때까지 반복
+        while(list.Count > 1)
+        {
+            //포인터가 참조하는 위치의 번호를 출력
+            writer.Write(list[pointer] + ", ");
+
+            //해당 위치의 번호를 리스트에서 제거
+            list.RemoveAt(pointer);
+
+            //원형성을 만족시키며 포인터 변수 갱신
+            pointer = (pointer + k - 1) % list.Count;
+        }
+
+        //마지막 남은 번호 출력
+        writer.Write(list[0] + ">");
+        
+        reader.Close();
+        writer.Close();
+    }
+}
