@@ -1,0 +1,46 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.InteropServices;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        //문자열 길이
+        int l = int.Parse(reader.ReadLine());
+
+        //문자열 저장
+        string str = reader.ReadLine();
+
+        //각 문자열 해싱 총합을 저장하는 변수
+        long result = 0;
+
+        //각 문자에 대해 반복
+        for(int i = 0; i < str.Length; i++)
+        {
+            //각 자릿수의 거듭제곱을 저장
+            long powValue = 1;
+
+            //자릿수만큼 31의 거듭제곱한 값에 1234567891로 나머지 연산한 값을 저장
+            for(int j = 0; j < i; j++)
+            {
+                powValue = (powValue * 31) % 1234567891;
+            }
+
+            //해싱 총합 갱신
+            result = (result + (str[i] - 'a' + 1) * powValue) % 1234567891;
+        }
+
+        //결과 출력
+        writer.Write(result);
+
+        reader.Close();
+        writer.Close();
+
+    }
+}
