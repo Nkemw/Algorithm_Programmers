@@ -1,0 +1,76 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.InteropServices;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        string[] temp = reader.ReadLine().Split();
+
+        //순서대로 세로, 가로, 미리 가지고 있는 블록 수
+        int n = int.Parse(temp[0]);
+        int m = int.Parse(temp[1]);
+        int b = int.Parse(temp[2]);
+
+        //각 기둥의 초기 높이
+        List<int> landHeight = new List<int>();
+
+        //각 기둥의 높이 합계
+        int sum = 0;
+
+        //각 기둥의 높이 저장
+        for(int i = 0; i < n; i++)
+        {
+            temp = reader.ReadLine().Split();
+
+            for(int j = 0; j < m; j++)
+            {
+                landHeight.Add(int.Parse(temp[j]));
+
+                sum += int.Parse(temp[j]);
+            }
+        }
+
+        //리스트 정렬
+        landHeight.Sort();
+
+        //쌓아야 하는 기둥과 제거해야 하는 기둥의 2:1이 되는 높이
+        int midValue = landHeight[(int)Math.Floor((double)landHeight.Count * 2 / 3)];
+
+        //최적으로 땅을 고르게 했을 때의 소요 시간
+        int time = 0;
+
+        //가지고 있는 블록으로 최적의 높이를 만들 수 없는 경우
+        //높이를 1씩 감소
+        while (sum + b < midValue * n * m)
+        {
+            midValue--;
+        }
+
+        //최적의 높이에 대해 각 기둥의 높이를 비교하여 소요 시간 집계
+        for (int i = 0; i < n * m; i++)
+        {
+            if (landHeight[i] < midValue)
+            {
+                time += midValue - landHeight[i];
+            }
+            else
+            {
+                time += (landHeight[i] - midValue) * 2;
+            }
+        }
+
+        //소요 시간과 최적 높이 출력
+        writer.Write(time + " " + midValue);
+
+        reader.Close();
+        writer.Close();
+
+    }
+}
