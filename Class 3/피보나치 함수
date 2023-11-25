@@ -1,0 +1,48 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.InteropServices;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        //테스트 케이스 개수
+        int t = int.Parse(reader.ReadLine());
+
+        //0 번째, 1 번째 피보나치 수를 구하는 함수가 호출되는 횟수
+        //N은 40을 넘지 않으므로 0 ~ 40 까지의 공간을 할당
+        int[] zeroCount = new int[41];
+        int[] oneCount = new int[41];
+
+        //0 번째와 1 번째 초기값 저장
+        zeroCount[0] = 1;
+        oneCount[0] = 0;
+
+        zeroCount[1] = 0;
+        oneCount[1] = 1;
+
+        //점화식을 이용해 N이 2 ~ 40 인 경우 각 호출 횟수를 저장
+        for(int i = 2; i < 41; i++)
+        {
+            zeroCount[i] = zeroCount[i - 1] + zeroCount[i - 2];
+            oneCount[i] = oneCount[i - 1] + oneCount[i - 2];
+        }
+
+        //각 테스트 케이스에서 미리 구한 배열을 이용
+        //N 번째 피보나치 수를 구할 때 호출되는 횟수를 출력
+        for(int i = 0; i < t; i++) {
+            int n = int.Parse(reader.ReadLine());
+
+            writer.WriteLine(zeroCount[n] + " " + oneCount[n]);
+        }
+
+        reader.Close();
+        writer.Close();
+
+    }
+}
