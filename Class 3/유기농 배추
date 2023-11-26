@@ -1,0 +1,86 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Runtime.InteropServices;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        //테스트 케이스 개수
+        int t = int.Parse(reader.ReadLine());
+
+        //상하좌우 이동
+        int[,] move = { { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 } };
+
+        for(int i = 0; i < t; i++)
+        {
+            string[] temp = reader.ReadLine().Split();
+
+            //가로, 세로, 배추의 개수
+            int m = int.Parse(temp[0]);
+            int n = int.Parse(temp[1]);
+            int k = int.Parse(temp[2]);
+
+            //배추 집합의 개수
+            int count = 0;
+
+            //모든 배추의 위치, <x, y> 정보를 저장
+            List<Tuple<int, int>> cabbagePos = new List<Tuple<int, int>>();
+
+            //모든 배추의 위치를 리스트에 저장
+            for(int j = 0; j < k; j++)
+            {
+                temp = reader.ReadLine().Split();
+
+                cabbagePos.Add(new Tuple<int, int>(int.Parse(temp[0]), int.Parse(temp[1])));
+            }
+
+            
+            //리스트에 모든 배추의 위치 정보가 없어질 때까지 반복
+            while (cabbagePos.Count > 0)
+            {
+                //BFS로 얻어낸 배추의 위치를 저장
+                Queue<Tuple<int, int>> queue = new Queue<Tuple<int, int>>();
+
+                //리스트의 처음 데이터를 큐에 저장하고 해당 데이터를 리스트에서 제거
+                queue.Enqueue(new Tuple<int, int>(cabbagePos[0].Item1, cabbagePos[0].Item2));
+                cabbagePos.RemoveAt(0);
+
+                //집합의 개수 1 증가
+                count++;
+
+                //너비 우선 탐색
+                while (queue.Count > 0)
+                {
+                    //현재 배추의 위치
+                    Tuple<int, int> curPos = queue.Dequeue();
+
+                    //상하좌우 이동
+                    for(int l = 0; l < 4; l++)
+                    {
+                        //상하좌우 위치에 다른 배추가 존재하는 경우
+                        if (cabbagePos.Contains(new Tuple<int, int>(curPos.Item1 + move[l, 0], curPos.Item2 + move[l, 1])))
+                        {
+                            //다른 배추의 위치를 큐에 저장하고 리스트에서 제거
+                            Tuple<int, int> nextPos = new Tuple<int, int>(curPos.Item1 + move[l, 0], curPos.Item2 + move[l, 1]);
+                            queue.Enqueue(nextPos);
+                            cabbagePos.RemoveAt(cabbagePos.IndexOf(nextPos));
+                        }
+                    }
+                }
+            }
+
+            //배추 집합의 개수 출력
+            writer.WriteLine(count);
+        }
+
+        reader.Close();
+        writer.Close();
+
+    }
+}
