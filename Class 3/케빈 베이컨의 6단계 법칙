@@ -1,0 +1,96 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+class Program
+{
+    static HashSet<int> visited = new HashSet<int>();
+    static StringBuilder sb = new StringBuilder();
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        string[] temp = reader.ReadLine().Split();
+
+        //번호의 개수, 간선의 개수
+        int n = int.Parse(temp[0]);
+        int m = int.Parse(temp[1]);
+
+        //편의성을 위해 n+1 * n+1 공간 할당
+        int[,] graph = new int[n+1, n+1];
+
+        //그래프 초기화
+        for (int i = 1; i <= n; i++)
+        {
+            for (int j = 1; j <= n; j++)
+            {
+                //자기 자신은 거리를 0, 그 이외엔 간선이 없다는 의미로 큰 수를 저장
+                if (i == j)
+                {
+                    graph[i, j] = 0;
+                }
+                else
+                {
+                    graph[i, j] = Int16.MaxValue;
+                }
+            }
+        }
+
+        //간선을 입력받아 양방향으로 거리 부여
+        for (int i = 0; i < m; i++)
+        {
+            temp = reader.ReadLine().Split();
+
+            int r = int.Parse(temp[0]);
+            int c = int.Parse(temp[1]);
+
+            graph[r, c] = 1;
+            graph[c, r] = 1;
+        }
+
+        
+        //플로이드-와샬 알고리즘
+
+        //경유 번호
+        for(int k = 1; k <= n; k++)
+        {
+            //시작 번호
+            for(int i = 1; i <= n; i++)
+            {
+                //목표 번호
+                for(int j = 1; j <= n; j++)
+                {
+                    graph[i, j] = Math.Min(graph[i, j], graph[i, k] + graph[k, j]);
+                }
+            }
+        }
+
+        //거리의 합이 최소인 번호에 대한 정보, <번호, 거리>
+        Tuple<int, int> minCountData = new Tuple<int, int>(Int16.MaxValue, Int16.MaxValue);
+
+        //1번부터 n번까지 모든 사람과의 거리의 합을 계산
+        for(int i = 1; i <= n; i++)
+        {
+            int sum = 0;
+
+            for(int j = 1; j <= n; j++)
+            {
+                sum += graph[i, j];
+            }
+
+            //저장된 최소 거리가 새로운 거리의 합보다 큰 경우 최소 거리를 갱신
+            if(sum < minCountData.Item2)
+            {
+                minCountData = new Tuple<int, int>(i, sum);
+            }
+        }
+
+        //거리의 합이 최소인 번호를 출력
+        writer.Write(minCountData.Item1);
+
+        reader.Close();
+        writer.Close();
+
+    }
+}
