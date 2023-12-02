@@ -1,0 +1,87 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        StringBuilder sb = new StringBuilder();
+
+        //입력 받은 식
+        string str = reader.ReadLine();
+
+        //연산 결과
+        int result = 0;
+
+        //식에 존재하는 양수
+        List<int> values = new List<int>();
+
+        //식에 존재하는 연산 기호
+        List<int> operations = new List<int>();
+
+        //입력 받은 식의 포인터
+        int index = 0;
+
+        //양수와 기호를 구분하여 각 리스트에 저장
+        while (index < str.Length)
+        {
+            //연산 기호를 탐색한 경우
+            if (str[index] == '+' || str[index] == '-')
+            {
+                //양수를 저장하는 리스트에 StringBuilder에 저장된 값을 저장
+                values.Add(int.Parse(sb.ToString()));
+
+                //기호를 저장하는 리스트에 해당 기호 저장
+                operations.Add(str[index]);
+
+                //StringBuilder 초기화
+                sb.Clear();
+            } else
+            {
+                //0 ~ 9 사이의 숫자를 탐색했다면 Stringbuilder에 저장
+                sb.Append(str[index]);
+            }
+            index++;
+        }
+
+        //StringBuilder에 남아 있는 양수를 추가로 리스트에 저장
+        values.Add(int.Parse(sb.ToString()));
+
+
+        index = 0;
+
+        //기호에 따른 중간 계산
+        for (int i = 0; i < operations.Count; i++)
+        {
+            // + 기호가 존재한다면 해당 기호 양 옆에 있는 값을 합하여 저장
+            if (operations[i] == '+') {
+                values[index] = values[index] + values[index + 1];
+
+                values.RemoveAt(index + 1);
+            } else
+            {
+                index++;
+            }
+        }
+
+        //초기값으로 첫 번째 양수를 저장
+        result = values[0];
+
+        //이후 -로 이루어진 양수들의 값만큼 감소
+        for(int i = 1; i < values.Count; i++)
+        {
+            result -= values[i];
+        }
+
+        //결과 출력
+        writer.Write(result);
+
+        reader.Close();
+        writer.Close();
+
+    }
+}
