@@ -1,0 +1,54 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        string[] temp = reader.ReadLine().Split();
+
+        //입력 받을 포켓몬의 개수, 올바른 결과를 출력해야할 문제의 개수 
+        int n = int.Parse(temp[0]);
+        int m = int.Parse(temp[1]);
+
+        //Dictionary와 배열 자료구조, 배열은 편의성을 위해 n+1만큼 공간 할당
+        string[] pokemonArr = new string[n + 1];
+        Dictionary<string, int> pokemonDict = new Dictionary<string, int>();
+
+        //포켓몬의 이름을 입력 받아 입력 순서대로 데이터 저장
+        for(int i = 0; i < n; i++)
+        {
+            string pokemonName = reader.ReadLine();
+
+            pokemonArr[i + 1] = pokemonName;
+            pokemonDict.Add(pokemonName, i + 1);
+        }
+
+        //이후 문제의 개수만큼 반복
+        for(int i = 0; i < m; i++)
+        {
+            //배열 또는 Dictionary의 내부 요소를 접근할 인덱스
+            string pokemonIndex = reader.ReadLine();
+
+            //Dictionary의 Key는 모두 자연수가 아닌 문자열이므로 인덱스가 문자열인지 판별
+            if (pokemonDict.ContainsKey(pokemonIndex))
+            {
+                //인덱스가 문자열이라면 Dictionary에 접근하여 포켓몬 입력 번호를 출력
+                writer.WriteLine(pokemonDict[pokemonIndex]);
+            }
+            else
+            {
+                //인덱스가 자연수라면 배열에 접근하여 포켓몬 이름을 출력
+                writer.WriteLine(pokemonArr[int.Parse(pokemonIndex)]);
+            }
+        }
+
+        reader.Close();
+        writer.Close();
+
+    }
+}
