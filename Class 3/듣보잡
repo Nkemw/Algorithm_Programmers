@@ -1,0 +1,60 @@
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        string[] temp = reader.ReadLine().Split();
+
+        //저장할 문자열의 개수, 비교할 문자열의 개수
+        int n = int.Parse(temp[0]);
+        int m = int.Parse(temp[1]);
+
+        //n개의 문자열을 저장하는 HashSet 자료구조
+        HashSet<string> names = new HashSet<string>();
+
+        //중복되는 문자열들의 개수
+        int unknownCount = 0;
+
+        //중복되는 문자열들을 저장하는 리스트 자료구조
+        List<string> unknownList = new List<string>();
+
+        //1. n개의 문자열들을 HashSet 자료구조에 저장
+        for(int i = 0; i < n; i++)
+        {
+            names.Add(reader.ReadLine());
+        }
+
+        //2. m개의 문자열들을 HashSet 자료구조의 Contains 메소드를 사용해 중복 검출
+        //중복된 문자열들은 리스트에 추가
+        for(int i = 0; i < m; i++)
+        {
+            string unknownName = reader.ReadLine();
+
+            if (names.Contains(unknownName))
+            {
+                unknownCount++;
+                unknownList.Add(unknownName);
+            }
+        }
+
+        //3. 리스트 오름차순 정렬
+        unknownList.Sort();
+
+        //4. 중복된 문자열의 개수와 사전 순으로 중복된 문자열 출력
+        writer.WriteLine(unknownCount);
+
+        foreach(string name in unknownList)
+        {
+            writer.WriteLine(name);
+        }
+
+        reader.Close();
+        writer.Close();
+
+    }
+}
