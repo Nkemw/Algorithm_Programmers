@@ -1,0 +1,42 @@
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        int n = int.Parse(reader.ReadLine());
+
+        //우선순위 큐, <데이터, 우선순위>
+        PriorityQueue<int, int> pq = new PriorityQueue<int, int>();
+
+        
+        for(int i = 0; i < n; i++)
+        {
+            int command = int.Parse(reader.ReadLine());
+
+            if(command == 0)
+            {
+                if(pq.Count == 0)
+                {
+                    writer.WriteLine(0);
+                } else
+                {
+                    writer.WriteLine(pq.Dequeue());
+                }
+            } else
+            {
+                //작은 값이라면 우선 순위를 작은 값을 저장하여 최소 힙이 되도록 설정
+                //반대인 최대 힙의 경우 작은 값이라면 우선 순위를 큰 값을 저장
+                pq.Enqueue(command, command);
+            }
+        }
+
+        reader.Close();
+        writer.Close();
+
+    }
+}
