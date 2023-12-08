@@ -1,0 +1,63 @@
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        //회의의 개수
+        int n = int.Parse(reader.ReadLine());
+
+        //<시작 시각, 종료 시각>
+        List<Tuple<int, int>> meetingList = new List<Tuple<int, int>>();
+
+        //회의 예약 정보 입력
+        for(int i = 0; i < n; i++)
+        {
+            string[] temp = reader.ReadLine().Split();
+
+            int startTime = int.Parse(temp[0]);
+            int endTime = int.Parse(temp[1]);
+
+            meetingList.Add(new Tuple<int, int>(startTime, endTime));
+        }
+
+        //시작 시각 오름차순 정렬 후 종료 시각 오름차순 정렬
+        meetingList.Sort();
+
+        //회의실에 배정할 수 있는 최대 회의의 개수
+        int count = 1;
+ 
+        //첫 회의의 종료 시간을 시작으로 순차 탐색 시작
+        int lastTime = meetingList[0].Item2; 
+
+        for(int i = 1; i < n; i++)
+        {
+            //앞선 회의와 뒤이은 회의가 겹치지 않는 경우
+            if (meetingList[i].Item1 >= lastTime)
+            {
+                //앞선 회의를 배정하여 회의의 개수를 늘리고, 종료 시각을 다음 회의의 종료 시각으로 저장
+                count++;
+                lastTime = meetingList[i].Item2;
+            } else
+            {
+                //앞선 회의와 뒤이은 회의가 겹치며 나중에 시작하는 회의의 종료 시각이 작은 경우
+                if (meetingList[i].Item2 < lastTime)
+                {
+                    //종료 시각이 작은 경우로 변경
+                    lastTime = meetingList[i].Item2;
+                }
+            }
+        }
+
+        //최대 회의 개수 출력
+        writer.WriteLine(count);
+
+        reader.Close();
+        writer.Close();
+
+    }
+}
