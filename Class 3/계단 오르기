@@ -1,0 +1,61 @@
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+          
+        //계단의 개수
+        int n = int.Parse(reader.ReadLine());
+
+        //계단의 점수를 저장하기 위해 계단의 개수만큼 배열 크기 할당
+        int[] scores = new int[n];
+
+        //계단 점수 입력
+        for (int i = 0; i < n; i++)
+        {
+            scores[i] = int.Parse(reader.ReadLine());
+        }
+
+        //계단이 1개 및 2개인 경우 모든 계단의 점수를 합하여 출력
+        if (n == 1)
+        {
+            writer.Write(scores[0]);
+        }
+        else if (n == 2)
+        {
+            writer.Write(scores[0] + scores[1]);
+        }
+        else
+        {
+
+            //계단의 개수가 3 이상이라면 메모이제이션 방식을 이용하기 위해 추가 배열 할당
+            int[] dp = new int[n];
+
+            //계단이 1, 2, 3개일 때 초기값 설정
+            dp[0] = scores[0];
+            dp[1] = scores[0] + scores[1];
+       
+            //계단이 3개인 경우 3번 계단 점수와 0 또는 1번 계단 중 점수가 더 높은 것을 합산
+            dp[2] = scores[2] + Math.Max(scores[0], scores[1]);
+
+            //계단이 4개 이상인 경우
+            for (int i = 3; i < n; i++)
+            {
+                //n번 계단의 점수와 n-2번 계단까지의 최대 점수와 n-3번 계단까지의 최대 점수에
+                //n-1번 계단의 점수를 합한 것을 비교하여 더 높은 점수를 저장
+                dp[i] = scores[i] + Math.Max(dp[i - 3] + scores[i - 1], dp[i - 2]);
+            }
+
+            //n번 계단의 최대 점수 출력
+            writer.Write(dp[n - 1]);
+
+        }
+        reader.Close();
+        writer.Close();
+
+    }
+}
