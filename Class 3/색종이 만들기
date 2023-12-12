@@ -1,0 +1,92 @@
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+
+    //정사각형 내부 색을 저장하기 위한 2차원 배열
+    static int[,] map;
+
+    //흰색 정사각형과 파란색 정사각형의 개수를 저장
+    static int whitePaperCount = 0;
+    static int bluePaperCount = 0;
+
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        //초기 정사각형 길이
+        int n = int.Parse(reader.ReadLine());
+
+        //정사각형의 넓이만큼 공간 할당
+        map = new int[n, n];
+
+        //정사각형 내부 색 저장
+        for(int i = 0; i < n; i++)
+        {
+            string[] temp = reader.ReadLine().Split();
+            for(int j = 0; j < n; j++)
+            {
+                map[i, j] = int.Parse(temp[j]);
+            }
+        }
+
+        //정사각형을 이루는 서로 다른 색의 정사각형의 개수 탐색
+        // <정사각형 정보, 정사각형 길이, 시작 행, 시작 열, 기준 색>
+        FindColor(map, n, 0, 0, map[0, 0]);
+
+        //흰색과 파란색 정사각형의 개수 출력
+        writer.WriteLine(whitePaperCount);
+        writer.Write(bluePaperCount);
+
+        reader.Close();
+        writer.Close();
+
+    }
+
+    
+    static void FindColor(int[,] map, int paperLength, int r, int c, int color)
+    {
+        //더 이상 분리되지 않는 정사각형이라면 색을 비교하여 해당 색의 정사각형의 개수 증가
+        if(paperLength == 1)
+        {
+            if (map[r, c] == 0)
+            {
+                whitePaperCount++;
+            } else
+            {
+                bluePaperCount++;
+            }
+            return;
+        }
+
+        //현재 정사각형의 내부를 탐색하여 같은 색으로 이루어져 있는지 검사
+        for(int i = r; i < r + paperLength; i++)
+        {
+            for(int j = c; j < c + paperLength; j++)
+            {
+                //한 정사각형이라도 기준 색과 다른 경우
+                if (color != map[i, j])
+                {
+                    //4개의 작은 정사각형으로 나누어 같은 방식으로 탐색
+                    FindColor(map, paperLength / 2, r, c, map[r, c]);
+                    FindColor(map, paperLength / 2, r + paperLength/2, c, map[r + paperLength/2, c]);
+                    FindColor(map, paperLength / 2, r, c + paperLength / 2, map[r, c + paperLength / 2]);
+                    FindColor(map, paperLength / 2, r + paperLength / 2, c + paperLength / 2, map[r + paperLength / 2, c + paperLength / 2]);
+
+                    return;
+                }
+            }
+        }
+
+        //모든 정사각형이 기준 색과 일치하는 경우 해당 색의 정사각형의 개수 증가
+        if(color == 0)
+        {
+            whitePaperCount++;
+        } else
+        {
+            bluePaperCount++;
+        }
+    }
+}
