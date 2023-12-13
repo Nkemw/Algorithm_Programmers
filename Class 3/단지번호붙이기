@@ -1,0 +1,101 @@
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+
+    //지도 정보를 저장하는 2차원 배열
+    static int[,] map;
+
+    //상하좌우 이동
+    static int[,] move = { { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 } };
+
+    //단지 내 집들의 개수를 저장
+    static List<int> houses = new List<int>();
+
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        //정사각형 한 변의 길이
+        int n = int.Parse(reader.ReadLine());
+
+        //정사각형의 크기만큼 공간 할당
+        map = new int[n, n];
+
+        //2차원 배열에 정보 저장
+        for(int i = 0; i < n; i++)
+        {
+            string temp = reader.ReadLine();
+            for(int j = 0; j < n; j++)
+            {
+                map[i, j] = int.Parse(temp[j].ToString());
+            }
+        }
+
+        //정사각형의 모든 지점을 시작 지점으로 설정한 뒤 탐색
+        for(int i = 0; i < n; i++)
+        {
+            for(int j = 0; j < n; j++)
+            {
+                //해당 위치에 집이 존재하는 경우에만 탐색
+                if (map[i, j] != 0)
+                {
+                    //탐색한 집은 0으로 설정하여 재탐색 방지
+                    map[i, j] = 0;
+
+                    //탐색으로 찾아낸 집들의 개수 저장
+                    int homeCount = Dfs(map, i, j);
+
+                    //단지 내 집들의 개수를 리스트에 저장
+                    houses.Add(homeCount);
+                }
+            }
+        }
+
+        //리스트 오름차순 정렬
+        houses.Sort();
+
+        //리스트 크기 및 순서대로 집들의 개수 출력
+        writer.WriteLine(houses.Count);
+
+        foreach(int homeCount in houses)
+        {
+            writer.WriteLine(homeCount);
+        }
+
+        reader.Close();
+        writer.Close();
+
+    }
+
+    //<2차원 정보 배열, 현재 행, 현재 열>
+    static int Dfs(int[,] map, int r, int c)
+    {
+        //현재 위치에 집이 존재하므로 초기값 1 설정
+        int count = 1;
+
+        //상하좌우 탐색
+        for(int i = 0; i < 4; i++)
+        {
+            //1. 다음 탐색 지점이 정사각형 범위에 포함되는 경우
+            if ( (r + move[i, 0] >= 0 && r + move[i, 0] < map.GetLength(0)) &&
+                (c + move[i, 1] >= 0 && c + move[i, 1] < map.GetLength(0)) ){
+
+                //2. 다음 탐색 지점에 집이 존재하는 경우
+                if (map[r + move[i, 0], c + move[i, 1]] == 1)
+                {
+                    //다음 위치의 값을 0으로 설정하여 재탐색 방지
+                    map[r + move[i, 0], c + move[i, 1]] = 0;
+
+                    //다음 탐색 지점에서도 동일하게 탐색을 진행하고 발견한 집들의 개수 증가
+                    count += Dfs(map, r + move[i, 0], c + move[i, 1]);
+                }
+            }
+        }
+
+        //탐색으로 얻어낸 집들의 개수 반환
+        return count;
+    }
+}
