@@ -1,0 +1,67 @@
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        string[] temp = reader.ReadLine().Split();
+
+        //나무의 개수, 만족해야 하는 절단된 나무들의 높이
+        int n = int.Parse(temp[0]);
+        int m = int.Parse(temp[1]);
+
+        //나무의 개수만큼 공간 할당
+        int[] treeHeights = new int[n];
+
+        temp = reader.ReadLine().Split();
+
+        //절단기 위치의 최소 높이와 최대 높이
+        int min = 0;
+        int max = treeHeights[n - 1];
+
+        //나무 높이를 저장함과 동시에 최대 나무 높이를 저장
+        for (int i = 0; i < n; i++)
+        {
+            treeHeights[i] = int.Parse(temp[i]);
+            max = Math.Max(max, treeHeights[i]);
+        }
+        
+        //파라메트릭 서치, 절단된 나무들의 높이가 m 이상이면서 절단기의 위치가 최대인 값을 탐색
+        while(min <= max)
+        {
+            //절단기 중간 위치
+            long mid = (min + max) / 2;
+
+            //절단기 위치에 대한 절단된 나무들의 높이 저장 변수
+            long cuttedTreeHeights = 0;
+
+            //절단기 위치에 따른 절단된 나무들의 높이 계산
+            for(int i = 0; i < n; i++)
+            {
+                cuttedTreeHeights += Math.Max(treeHeights[i] - mid, 0);
+            }
+
+            //절단된 나무들의 높이가 m 이상이면 최소 위치를 중간 위치보다 1 높은 지점으로 재탐색
+            //m 미만이라면 최대 위치를 중간 위치보다 1 낮은 지점으로 재탐색
+            if(cuttedTreeHeights >= m)
+            {
+                min = (int) (mid + 1);
+            } else { 
+                max = (int) (mid - 1);
+            }
+        }
+
+        //절단된 나무 높이가 m 이상이면서 절단기의 최대 높이를 출력
+        writer.Write(min - 1);
+
+        reader.Close();
+        writer.Close();
+
+    }
+
+}
