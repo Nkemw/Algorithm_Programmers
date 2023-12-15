@@ -1,0 +1,154 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+class Program
+{
+
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        //테스트 케이스 개수
+        int t = int.Parse(reader.ReadLine());
+
+        //테스트 케이스 개수만큼 반복
+        for(int i = 0; i < t; i++)
+        {
+            //명령어 문자열 저장
+            string command = reader.ReadLine();
+
+            //정수 데이터 개수
+            int numAmount = int.Parse(reader.ReadLine());
+
+            //괄호와 정수 그리고 쉼표로 이루어진 문자열 저장
+            string numString = reader.ReadLine();
+
+            //정수 데이터의 개수만큼 공간 할당
+            int[] numArr = new int[numAmount];
+
+            //문자열 저장에 쓰일 StringBuilder 객체
+            StringBuilder sb = new StringBuilder();
+
+            //배열의 비어 있는 위치
+            int arrIndex = 0;
+
+            //괄호를 제거하기 위해 두 번째 위치와 마지막 - 1 번째 위치까지 탐색
+            for(int j = 1; j < numString.Length - 1; j++)
+            {
+                //해당 위치의 문자가 쉼표가 아니라면 StringBuilder에 수를 추가
+                //쉼표라면 정수 배열에 StringBuilder에 저장된 문자열을 정수로 파싱하여 저장
+                if (numString[j] != ',')
+                {
+                    sb.Append(numString[j]);
+                } else {
+                    //배열에 저장한 뒤 비어 있는 위치를 1 증가
+                    numArr[arrIndex++] = int.Parse(sb.ToString());
+                   
+                    //다음 정수를 저장하기 위해 초기화
+                    sb.Clear();
+                }
+
+                //마지막 정수의 경우 쉼표를 탐색할 수 없으므로 조건문을 이용해 저장
+                if(j == numString.Length - 2)
+                {
+                    numArr[arrIndex] = int.Parse(sb.ToString());
+
+                    sb.Clear();
+                }
+            }
+
+            //제거된 정수 개수
+            int popCount = 0;
+
+            //배열의 뒤집힌 상태
+            bool reverse = false;
+
+            //명령어에 대한 오류 여부
+            bool isError = false;
+
+            //배열의 첫 위치를 가리키는 포인터와 마지막 위치를 가리키는 포인터
+            int frontIndex = 0;
+            int backIndex = numArr.Length - 1;
+
+
+            //명령어 길이만큼 반복
+            for(int j = 0; j < command.Length; j++)
+            {
+                //명령어가 R인 경우 배열 상태를 반대로 갱신
+                if (command[j] == 'R')
+                {
+                    reverse = !reverse;
+                }
+                else if (command[j] == 'D')
+                {
+                    //명령어가 D인 경우 먼저 제거할 수 있는지 확인
+                    //제거할 수 없다면 error를 출력하고 다음 테스트 케이스로 이동
+                    if(popCount + 1 > numArr.Length)
+                    {
+                        writer.WriteLine("error");
+                        isError = true;
+                        break;
+                    }
+
+                    //제거할 수 있다면 배열의 뒤집힌 상태에 따라 올바른 포인터 증가 또는 감소
+                    if (reverse)
+                    {
+                        backIndex--;
+                    } else
+                    {
+                        frontIndex++;
+                    }
+
+                    //제거 개수 1 증가
+                    popCount++;
+                }
+            }
+
+            if (isError)
+            {
+                continue;
+            }
+
+            //데이터 출력을 위해 먼저 좌괄호 추가
+            sb.Append("[");
+
+            //뒤집힌 상태에 따라 순서대로 배열 데이터와 쉼표를 추가
+            if (reverse)
+            {
+                for(int j = backIndex; j >= frontIndex; j--)
+                {
+                    sb.Append(numArr[j]);
+
+                    if(j != frontIndex)
+                    {
+                        sb.Append(",");
+                    }
+                }
+            } else
+            {
+                for (int j = frontIndex; j <= backIndex; j++)
+                {
+                    sb.Append(numArr[j]);
+
+                    if (j != backIndex)
+                    {
+                        sb.Append(",");
+                    }
+                }
+            }
+
+            //우괄호 추가
+            sb.Append("]");
+
+            //결과 출력
+            writer.WriteLine(sb.ToString());
+        }
+
+        reader.Close();
+        writer.Close();
+
+    }
+
+}
