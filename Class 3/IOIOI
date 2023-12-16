@@ -1,0 +1,73 @@
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        int n = int.Parse(reader.ReadLine());
+        int m = int.Parse(reader.ReadLine());
+
+        string s = reader.ReadLine();
+
+        //수열 P1 문자열
+        String p1 = "IOI";
+
+        //P1의 개수
+        int p1Count = 0;
+
+        //Pn의 개수
+        int result = 0;
+
+  
+        for(int i = 0; i < s.Length; i++)
+        {
+            for(int j = 0; j < p1.Length; j++)
+            {
+                //P1을 만들 수 없는 경우 탐색 종료
+                if(i + p1.Length > s.Length)
+                {
+                    break;
+                }
+
+                //S의 문자와 P1의 문자가 일치하는 경우
+                if (p1[j] == s[i + j])
+                {
+                    //S 문자열에 P1 수열이 존재하는 경우
+                    if(j == p1.Length - 1)
+                    {
+                        //P1 수열의 개수 증가
+                        p1Count++;
+
+                        //P1 수열 이후의 문자열 탐색
+                        i++;
+
+                        //P1 수열의 개수가 n개 존재한다면 Pn의 개수 증가
+                        if(p1Count >= n)
+                        {
+                            result++;
+                        }
+                        break;
+                    }
+                } else
+                {
+                    //P1과 일치하지 않는다면 이전까지 탐색한 문자열로 Pn을 만들 수 없으므로 초기화
+                    p1Count = 0;
+                    break;
+                }
+            }
+        }
+
+        //Pn의 개수 출력
+        writer.Write(result);
+
+        reader.Close();
+        writer.Close();
+
+    }
+
+}
