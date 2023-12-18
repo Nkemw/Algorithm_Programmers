@@ -1,0 +1,67 @@
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        //테스트 케이스 횟수
+        int t = int.Parse(reader.ReadLine());
+
+        //테스트 케이스 횟수만큼 반복
+        for(int i = 0; i < t; i++)
+        {
+            string[] temp = reader.ReadLine().Split();
+
+            //M, N
+            int m = int.Parse(temp[0]);
+            int n = int.Parse(temp[1]);
+
+            //x, y
+            int x = int.Parse(temp[2]);
+            int y = int.Parse(temp[3]);
+
+            //x:y인 년도의 순서
+            //x:x*m mod n인 모든 년도를 구하기 위해 초기값 x 저장
+            int result = x;
+
+            //x:x*m mod n인 모든 년도에 대해 x:y인지 검사
+            while (true)
+            {
+                //현재 년도가 x:y인 경우 몇 번째 해인지 출력
+                if (result % n == y)
+                {
+                    writer.WriteLine(result);
+                    break;
+                }
+
+                //n == 1인 경우에 대한 예외 처리
+                //x*m mod n = 0, y mod n = 0이면 x:y로 간주
+                if(result % n == 0 && y % n == 0)
+                {
+                    writer.WriteLine(result);
+                    break;
+                }
+
+                //모든 x:x*m mod n 중 x:y인 년도가 없는 경우 -1 출력
+                if (result > m * n)
+                {
+                    writer.WriteLine("-1");
+                    break;
+                }
+
+                //매 반복마다 m만큼 년도 증가
+                result += m;
+
+            }
+        }
+
+        reader.Close();
+        writer.Close();
+
+    }
+}
