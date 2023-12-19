@@ -1,0 +1,123 @@
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+
+    static void Main(string[] args)
+    {
+        StreamReader reader = new StreamReader(new BufferedStream(Console.OpenStandardInput()));
+        StreamWriter writer = new StreamWriter(new BufferedStream(Console.OpenStandardOutput()));
+
+        //상하좌우, 위 아래로의 이동
+        Tuple<int, int, int>[] dir = new Tuple<int, int, int>[6];
+        dir[0] = new Tuple<int, int, int>(1, 0, 0);
+        dir[1] = new Tuple<int, int, int>(-1, 0, 0);
+        dir[2] = new Tuple<int, int, int>(0, 1, 0);
+        dir[3] = new Tuple<int, int, int>(0, -1, 0);
+        dir[4] = new Tuple<int, int, int>(0, 0, 1);
+        dir[5] = new Tuple<int, int, int>(0, 0, -1);
+
+        string[] input = reader.ReadLine().Split();
+
+        int y = int.Parse(input[0]);
+        int x = int.Parse(input[1]);
+        int z = int.Parse(input[2]);
+
+        //3차원 배열의 크기 할당
+        int[,,] map = new int[x, y, z];
+
+        //입력된 토마토의 합계, 저장소의 크기로 초기화
+        int tomatoAmount = x * y * z;
+
+        //탐색으로 찾아낸 토마토의 합계
+        int searchCount = 0;
+
+        //BFS에 쓰일 큐 자료구조, <x, y, z, 소요 시간>
+        Queue<Tuple<int, int, int, int>> queue = new Queue<Tuple<int, int, int, int>>();
+
+        //입력 값을 3차원 배열에 저장
+        for (int i = 0; i < z; i++)
+        {
+            for(int j = 0; j < x; j++)
+            {
+                input = reader.ReadLine().Split();
+                for(int k = 0; k < y; k++)
+                {
+                    map[j, k, i] = int.Parse(input[k]);
+
+                    //해당 위치에 토마토가 없는 경우 
+                    //입력된 토마토 합계를 1 감소
+                    if (map[j, k, i] == -1)
+                    {
+                        tomatoAmount--;
+                    } else if (map[j, k, i] == 1)
+                    {
+                        //초기 입력된 익은 토마토의 위치를 큐에 저장하고 탐색 개수 증가
+                        searchCount++;
+                        queue.Enqueue(new Tuple<int, int, int, int>(j, k, i, 0));
+                    }
+                }
+            }
+        }
+
+        //모든 토마토를 찾아내는 데 소요된 시간
+        int maxDay = 0;
+
+        //BFS
+        while(queue.Count > 0)
+        {
+            //현재 위치에 대한 정보
+            Tuple<int, int, int, int> curInfo = queue.Dequeue();
+
+            //토마토 탐색의 소요 시간 갱신
+            if(maxDay < curInfo.Item4)
+            {
+                maxDay = curInfo.Item4;
+            }
+
+            //상하좌우, 위 아래 탐색
+            for(int i = 0; i < dir.Length; i++)
+            {
+                //다음 위치의 좌표
+                int nextX = curInfo.Item1 + dir[i].Item1;
+                int nextY = curInfo.Item2 + dir[i].Item2;
+                int nextZ = curInfo.Item3 + dir[i].Item3;
+
+                //저장소 범위를 벗어나지 않는 경우
+                if( (nextX >= 0 && nextX < x) &&
+                    (nextY >= 0 && nextY < y) &&
+                    (nextZ >= 0 && nextZ < z))
+                {
+                    //다음 위치에 익지 않은 토마토가 있는 경우
+                    if (map[nextX, nextY, nextZ] == 0)
+                    {
+                        //탐색으로 찾아낸 토마토 개수 증가
+                        searchCount++;
+
+                        //다음 위치의 토마토를 익은 토마토로 갱신
+                        map[nextX, nextY, nextZ] = 1;
+
+                        //다음 위치의 토마토를 기준으로 탐색
+                        queue.Enqueue(new Tuple<int, int, int, int>(nextX, nextY, nextZ, curInfo.Item4 + 1));
+                    }
+                }
+            }
+        }
+        
+        //BFS로 탐색된 토마토의 개수가 미리 입력된 토마토의 합계와 같다면 탐색에 소요된 시간 출력
+        //일치하지 않는다면 모든 토마토가 익을 수 없는 것이므로 -1 출력
+        if(searchCount == tomatoAmount)
+        {
+            writer.Write(maxDay);
+        } else
+        {
+            writer.Write(-1);
+        }
+        
+
+        reader.Close();
+        writer.Close();
+
+    }
+}
